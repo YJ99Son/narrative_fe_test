@@ -401,11 +401,34 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
                     </div>
 
                     {/* Scroll Indicators - Left/Right Gradients/Arrows */}
-                    <div style={{ position: 'absolute', top: '50px', bottom: 0, left: 0, width: '32px', background: 'linear-gradient(to right, var(--dash-bg), transparent)', zIndex: 12, pointerEvents: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <ChevronLeft size={16} color="var(--dash-text)" style={{ opacity: 0.8 }} />
+                    {/* Scroll Indicators - Functional Left/Right Arrows */}
+                    <div
+                        onClick={handlePrevStep}
+                        style={{
+                            position: 'absolute', top: '50px', bottom: 0, left: 0, width: '40px',
+                            background: 'linear-gradient(to right, var(--dash-header-bg) 60%, transparent)',
+                            zIndex: 12,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            cursor: currentStep === 0 ? 'default' : 'pointer',
+                            opacity: currentStep === 0 ? 0.3 : 1,
+                            pointerEvents: currentStep === 0 ? 'none' : 'auto'
+                        }}
+                    >
+                        <ChevronLeft size={20} color="var(--dash-text)" strokeWidth={3} />
                     </div>
-                    <div style={{ position: 'absolute', top: '50px', bottom: 0, right: 0, width: '32px', background: 'linear-gradient(to left, var(--dash-bg), transparent)', zIndex: 12, pointerEvents: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <ChevronRight size={16} color="var(--dash-text)" style={{ opacity: 0.8 }} />
+                    <div
+                        onClick={handleNextStep}
+                        style={{
+                            position: 'absolute', top: '50px', bottom: 0, right: 0, width: '40px',
+                            background: 'linear-gradient(to left, var(--dash-header-bg) 60%, transparent)',
+                            zIndex: 12,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            cursor: currentStep === selectedPath.length - 1 ? 'default' : 'pointer',
+                            opacity: currentStep === selectedPath.length - 1 ? 0.3 : 1,
+                            pointerEvents: currentStep === selectedPath.length - 1 ? 'none' : 'auto'
+                        }}
+                    >
+                        <ChevronRight size={20} color="var(--dash-text)" strokeWidth={3} />
                     </div>
 
                     <div
@@ -458,31 +481,7 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
                 {/* 2. MAIN CONTENT */}
                 <div style={{ flex: 1, position: 'relative', overflowY: 'auto' }}>
                     {/* Navigation Buttons (Overlay) */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 10px', position: 'sticky', top: 0, zIndex: 5 }}>
-                        <button
-                            onClick={handlePrevStep}
-                            disabled={currentStep === 0}
-                            style={{
-                                padding: '10px', borderRadius: '50%', background: 'var(--dash-surface)', border: 'none', color: 'var(--dash-text)',
-                                opacity: currentStep === 0 ? 0.3 : 1, backdropFilter: 'blur(4px)', boxShadow: '0 2px 8px var(--dash-shadow)'
-                            }}
-                        >
-                            <ChevronLeft size={24} />
-                        </button>
-                        <div style={{ fontSize: '12px', color: 'var(--dash-muted)', fontWeight: 600 }}>
-                            {currentStep + 1} / {selectedPath.length}
-                        </div>
-                        <button
-                            onClick={handleNextStep}
-                            disabled={currentStep === selectedPath.length - 1}
-                            style={{
-                                padding: '10px', borderRadius: '50%', background: 'var(--dash-surface)', border: 'none', color: 'var(--dash-text)',
-                                opacity: currentStep === selectedPath.length - 1 ? 0.3 : 1, backdropFilter: 'blur(4px)', boxShadow: '0 2px 8px var(--dash-shadow)'
-                            }}
-                        >
-                            <ChevronRight size={24} />
-                        </button>
-                    </div>
+
 
                     {/* Content Detail */}
                     <div style={{ padding: '0 24px 160px' }}> {/* Extra padding for comfortable scroll above chat */}
@@ -711,7 +710,7 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
             <main style={{ flex: 1, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                 <section className="builder-canvas" style={{ flex: 1, width: '100%', height: '100%', cursor: isDragging.current ? 'grabbing' : 'grab', background: 'radial-gradient(circle at 1px 1px, var(--dash-border) 1px, transparent 0)', backgroundSize: '40px 40px', overflow: 'hidden' }} onWheel={handleWheel} onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
                     <div style={{
-                        transform: `translate(${pan.x}px, ${pan.y + (desktopFooterExpanded ? -window.innerHeight * 0.35 : 0)}px) scale(${scale})`,
+                        transform: `translate(${pan.x}px, ${pan.y + (desktopFooterExpanded ? -window.innerHeight * 0.3 : 0)}px) scale(${scale})`,
                         transformOrigin: '50% 50%',
                         transition: isDragging.current ? 'none' : 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)', // Smooth sync with footer
                         width: '5000px', height: '5000px', position: 'relative'
@@ -783,7 +782,7 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
                 </section >
                 <motion.section
                     initial={{ height: 60 }}
-                    animate={{ height: desktopFooterExpanded ? '80vh' : 60 }}
+                    animate={{ height: desktopFooterExpanded ? '70vh' : 60 }}
                     transition={{ type: 'spring', stiffness: 200, damping: 25 }}
                     style={{
                         position: 'absolute', bottom: 95, left: 0, right: 0, // Full width, lifted 5px more
