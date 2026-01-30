@@ -61,7 +61,7 @@ export const MOCK_SCENARIOS: SavedScenario[] = [
 
 const MyScenariosView = ({ setView, current }: MyScenariosViewProps) => {
     const [scenarios] = useState<SavedScenario[]>(MOCK_SCENARIOS)
-    const [isMobile, setIsMobile] = useState(false)
+    const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 768 : false)
 
     useEffect(() => {
         const checkMobile = () => setIsMobile(window.innerWidth < 768)
