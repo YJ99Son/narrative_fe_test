@@ -43,7 +43,7 @@ const App = () => {
   }
 
   if (view === 'QUIZ') {
-    return <QuizView setView={setView} current={view} />
+    return <QuizView setView={setView} />
   }
 
   if (view === 'PRESENTATION') {
