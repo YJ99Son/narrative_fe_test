@@ -781,11 +781,12 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
                     animate={{ height: desktopFooterExpanded ? 350 : 60 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                     style={{
-                        position: 'absolute', bottom: 0, left: 0, right: 0,
-                        borderTop: '1px solid var(--dash-border)',
+                        position: 'absolute', bottom: 90, left: 24, right: 24, // Lifted above nav and added side margins
+                        border: '1px solid var(--dash-border)',
+                        borderRadius: '24px', // Rounded all around since it's floating
                         background: 'var(--dash-bg)',
-                        zIndex: 100,
-                        boxShadow: '0 -4px 20px rgba(0,0,0,0.1)',
+                        zIndex: 100, // Below Nav (usually 9999) but above canvas
+                        boxShadow: '0 4px 30px rgba(0,0,0,0.1)',
                         display: 'flex', flexDirection: 'column'
                     }}
                 >
