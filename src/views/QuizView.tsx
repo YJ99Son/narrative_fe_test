@@ -6,7 +6,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 type QuizViewProps = {
     setView: (v: ViewState) => void
-    current: ViewState
 }
 
 type Question = {
@@ -52,7 +51,7 @@ const MOCK_QUIZ: Question[] = [
     }
 ]
 
-const QuizView = ({ setView, current }: QuizViewProps) => {
+const QuizView = ({ setView }: QuizViewProps) => {
     const [currentIndex, setCurrentIndex] = useState(0)
     const [selectedOption, setSelectedOption] = useState<string | null>(null)
     const [textAnswer, setTextAnswer] = useState('')
