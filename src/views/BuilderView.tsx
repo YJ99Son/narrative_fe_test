@@ -710,7 +710,12 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
             </header>
             <main style={{ flex: 1, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                 <section className="builder-canvas" style={{ flex: 1, width: '100%', height: '100%', cursor: isDragging.current ? 'grabbing' : 'grab', background: 'radial-gradient(circle at 1px 1px, var(--dash-border) 1px, transparent 0)', backgroundSize: '40px 40px', overflow: 'hidden' }} onWheel={handleWheel} onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
-                    <div style={{ transform: `translate(${pan.x}px, ${pan.y}px) scale(${scale})`, transformOrigin: '50% 50%', transition: isDragging.current ? 'none' : 'transform 0.1s ease-out', width: '5000px', height: '5000px', position: 'relative' }}>
+                    <div style={{
+                        transform: `translate(${pan.x}px, ${pan.y + (desktopFooterExpanded ? -window.innerHeight * 0.35 : 0)}px) scale(${scale})`,
+                        transformOrigin: '50% 50%',
+                        transition: isDragging.current ? 'none' : 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)', // Smooth sync with footer
+                        width: '5000px', height: '5000px', position: 'relative'
+                    }}>
                         <div style={{ position: 'absolute', left: '2500px', top: '2500px', transform: 'translate(-50%, -50%)', display: 'flex', gap: '80px' }}>
                             <Xwrapper>
                                 {DEPTH_STEPS.map((step, depth) => {
@@ -778,8 +783,8 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
                 </section >
                 <motion.section
                     initial={{ height: 60 }}
-                    animate={{ height: desktopFooterExpanded ? 350 : 60 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                    animate={{ height: desktopFooterExpanded ? '80vh' : 60 }}
+                    transition={{ type: 'spring', stiffness: 200, damping: 25 }}
                     style={{
                         position: 'absolute', bottom: 95, left: 0, right: 0, // Full width, lifted 5px more
                         borderTop: '1px solid var(--dash-border)',
