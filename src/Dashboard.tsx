@@ -64,6 +64,14 @@ export default function Dashboard({ setView }: DashboardProps) {
     const [valueChainToast, setValueChainToast] = useState<{ show: boolean, name: string, info: string } | null>(null)
     const scrollRef = useRef<HTMLDivElement>(null)
 
+    // Mobile Detection
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768)
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
+
     // Filter Logic
     const baseStocks = listMode === 'KOSPI'
         ? stocks
@@ -388,7 +396,7 @@ export default function Dashboard({ setView }: DashboardProps) {
 
                                                     {/* Card 1: Key Point */}
                                                     <div style={{
-                                                        minWidth: '100%',
+                                                        minWidth: isMobile ? '100%' : '50%',
                                                         scrollSnapAlign: 'start',
                                                         padding: '0 24px',
                                                         boxSizing: 'border-box'
@@ -403,7 +411,7 @@ export default function Dashboard({ setView }: DashboardProps) {
 
                                                     {/* Card 2: Candle Chart (Realistic) */}
                                                     <div style={{
-                                                        minWidth: '100%',
+                                                        minWidth: isMobile ? '100%' : '50%',
                                                         scrollSnapAlign: 'start',
                                                         padding: '0 24px',
                                                         boxSizing: 'border-box'
@@ -441,7 +449,7 @@ export default function Dashboard({ setView }: DashboardProps) {
 
                                                     {/* Card 3: Value Chain */}
                                                     <div style={{
-                                                        minWidth: '100%',
+                                                        minWidth: isMobile ? '100%' : '50%',
                                                         scrollSnapAlign: 'start',
                                                         padding: '0 24px',
                                                         boxSizing: 'border-box'
@@ -504,7 +512,7 @@ export default function Dashboard({ setView }: DashboardProps) {
 
                                                     {/* Card 4: Major News */}
                                                     <div style={{
-                                                        minWidth: '100%',
+                                                        minWidth: isMobile ? '100%' : '50%',
                                                         scrollSnapAlign: 'start',
                                                         padding: '0 24px',
                                                         boxSizing: 'border-box'
@@ -670,19 +678,19 @@ export default function Dashboard({ setView }: DashboardProps) {
                             }}
                         />
 
-                        {/* Drawer Sheet */}
+                        {/* Drawer Sheet (Mobile) or Center Modal (Desktop) */}
                         <motion.div
-                            initial={{ y: '100%' }}
-                            animate={{ y: 0 }}
-                            exit={{ y: '100%' }}
+                            initial={{ y: isMobile ? '100%' : 20, opacity: isMobile ? 1 : 0, scale: isMobile ? 1 : 0.95 }}
+                            animate={{ y: isMobile ? 0 : 0, opacity: 1, scale: 1 }}
+                            exit={{ y: isMobile ? '100%' : 20, opacity: isMobile ? 1 : 0, scale: isMobile ? 1 : 0.95 }}
                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                            drag="y"
+                            drag={isMobile ? "y" : false}
                             dragConstraints={{ top: 0 }}
                             dragElastic={0.2}
                             onDragEnd={(_, info) => {
-                                if (info.offset.y > 100) setValueChainToast(null)
+                                if (isMobile && info.offset.y > 100) setValueChainToast(null)
                             }}
-                            style={{
+                            style={isMobile ? {
                                 position: 'fixed',
                                 bottom: 0, left: 0, right: 0,
                                 background: '#ffffff', // White Light Mode
@@ -690,20 +698,43 @@ export default function Dashboard({ setView }: DashboardProps) {
                                 borderTopRightRadius: '28px',
                                 padding: '0 0 140px 0',
                                 zIndex: 9999,
-                                boxShadow: '0 -10px 40px rgba(0,0,0,0.15)', // Lighter shadow
+                                boxShadow: '0 -10px 40px rgba(0,0,0,0.15)',
                                 maxWidth: '600px',
                                 margin: '0 auto'
+                            } : {
+                                position: 'fixed',
+                                top: '50%', left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                width: '400px',
+                                background: '#ffffff',
+                                borderRadius: '24px',
+                                padding: '24px',
+                                zIndex: 9999,
+                                boxShadow: '0 20px 50px rgba(0,0,0,0.2)',
+                                border: '1px solid rgba(0,0,0,0.05)'
                             }}
                         >
-                            {/* Drag Handle Area */}
-                            <div style={{ padding: '12px 0 20px', display: 'flex', justifyContent: 'center' }}>
-                                <div style={{ width: '36px', height: '5px', background: '#e5e5e5', borderRadius: '100px' }} />
-                            </div>
+                            {/* Drag Handle Area (Mobile Only) */}
+                            {isMobile && (
+                                <div style={{ padding: '12px 0 20px', display: 'flex', justifyContent: 'center' }}>
+                                    <div style={{ width: '36px', height: '5px', background: '#e5e5e5', borderRadius: '100px' }} />
+                                </div>
+                            )}
 
                             {/* Content Container */}
-                            <div style={{ padding: '0 28px' }}>
+                            <div style={isMobile ? { padding: '0 28px' } : {}}>
+                                {/* Desktop Close Button */}
+                                {!isMobile && (
+                                    <button
+                                        onClick={() => setValueChainToast(null)}
+                                        style={{ position: 'absolute', top: '16px', right: '16px', border: 'none', background: 'transparent', cursor: 'pointer', color: '#999' }}
+                                    >
+                                        ✕
+                                    </button>
+                                )}
+
                                 {/* Header */}
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px', marginTop: isMobile ? 0 : '8px' }}>
                                     <div style={{
                                         width: '56px', height: '56px', borderRadius: '18px',
                                         background: 'linear-gradient(135deg, var(--dash-primary), #2563eb)',
@@ -714,7 +745,7 @@ export default function Dashboard({ setView }: DashboardProps) {
                                         {valueChainToast.name[0]}
                                     </div>
                                     <div>
-                                        <div style={{ fontSize: '26px', fontWeight: 800, color: '#111111', letterSpacing: '-0.5px', marginBottom: '4px' }}>
+                                        <div style={{ fontSize: isMobile ? '26px' : '24px', fontWeight: 800, color: '#111111', letterSpacing: '-0.5px', marginBottom: '4px' }}>
                                             {valueChainToast.name}
                                         </div>
                                         <div style={{ display: 'flex', gap: '6px' }}>
@@ -733,13 +764,13 @@ export default function Dashboard({ setView }: DashboardProps) {
                                     background: '#f9f9f9',
                                     borderRadius: '20px',
                                     padding: '24px',
-                                    marginBottom: '20px',
+                                    marginBottom: isMobile ? '20px' : '0',
                                     border: '1px solid #eee'
                                 }}>
-                                    <h4 style={{ margin: '0 0 12px 0', fontSize: '14px', color: '#888', fontWeight: 600 }}>기업 개요</h4>
+                                    <h4 style={{ margin: '0 0 12px 0', fontSize: isMobile ? '14px' : '13px', color: '#888', fontWeight: 600, textTransform: 'uppercase' }}>Company Profile</h4>
                                     <p style={{
                                         margin: 0,
-                                        fontSize: '17px',
+                                        fontSize: isMobile ? '17px' : '16px',
                                         lineHeight: 1.6,
                                         color: '#333',
                                         fontWeight: 400,
