@@ -3,7 +3,7 @@ import type { ViewState } from '../data'
 import FloatingNav from '../components/FloatingNav'
 import { SCENARIO_DATA, DEPTH_STEPS } from '../data/scenarioData'
 import type { ScenarioOption } from '../data/scenarioData'
-import { Save, MessageCircle, Send, ZoomIn, ZoomOut, RotateCcw, ChevronRight, ChevronLeft, Sparkles } from 'lucide-react'
+import { Save, Send, ZoomIn, ZoomOut, RotateCcw, ChevronRight, ChevronLeft, Sparkles } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Xarrow, { Xwrapper, useXarrow } from 'react-xarrows'
 
@@ -695,7 +695,7 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
                                                 <AnimatePresence>
                                                     {options.length > 0 ? options.map(opt => {
                                                         const isSel = selectedIds[depth] === opt.id
-                                                        const nextSel = selectedIds[depth + 1]
+                                                        // const nextSel = selectedIds[depth + 1]
                                                         return (
                                                             <motion.div key={opt.id} id={opt.id} onMouseDown={e => e.stopPropagation()} onClick={e => { e.stopPropagation(); handleSelect(opt, depth) }}
                                                                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
