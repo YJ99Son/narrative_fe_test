@@ -456,9 +456,9 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
                 </div>
 
                 {/* 2. MAIN CONTENT */}
-                <div style={{ flex: 1, position: 'relative', overflowY: 'auto' }}>
-                    {/* Navigation Buttons (Overlay) */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 10px', position: 'sticky', top: 0, zIndex: 5 }}>
+                <div style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                    {/* Navigation Buttons (Fixed) */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 20px', background: 'var(--dash-bg)', zIndex: 5 }}>
                         <button
                             onClick={handlePrevStep}
                             disabled={currentStep === 0}
@@ -485,7 +485,7 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
                     </div>
 
                     {/* Content Detail */}
-                    <div style={{ padding: '0 24px 160px' }}> {/* Extra padding for comfortable scroll above chat */}
+                    <div style={{ flex: 1, overflowY: 'auto', padding: '0 24px 160px' }}> {/* Extra padding for comfortable scroll above chat */}
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
