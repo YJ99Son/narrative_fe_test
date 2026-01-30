@@ -680,9 +680,24 @@ export default function Dashboard({ setView }: DashboardProps) {
 
                         {/* Drawer Sheet (Mobile) or Center Modal (Desktop) */}
                         <motion.div
-                            initial={{ y: isMobile ? '100%' : 20, opacity: isMobile ? 1 : 0, scale: isMobile ? 1 : 0.95 }}
-                            animate={{ y: isMobile ? 0 : 0, opacity: 1, scale: 1 }}
-                            exit={{ y: isMobile ? '100%' : 20, opacity: isMobile ? 1 : 0, scale: isMobile ? 1 : 0.95 }}
+                            initial={{
+                                x: isMobile ? 0 : '-50%',
+                                y: isMobile ? '100%' : '-40%',
+                                opacity: isMobile ? 1 : 0,
+                                scale: isMobile ? 1 : 0.95
+                            }}
+                            animate={{
+                                x: isMobile ? 0 : '-50%',
+                                y: isMobile ? 0 : '-50%',
+                                opacity: 1,
+                                scale: 1
+                            }}
+                            exit={{
+                                x: isMobile ? 0 : '-50%',
+                                y: isMobile ? '100%' : '-40%',
+                                opacity: isMobile ? 1 : 0,
+                                scale: isMobile ? 1 : 0.95
+                            }}
                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
                             drag={isMobile ? "y" : false}
                             dragConstraints={{ top: 0 }}
@@ -704,7 +719,6 @@ export default function Dashboard({ setView }: DashboardProps) {
                             } : {
                                 position: 'fixed',
                                 top: '50%', left: '50%',
-                                transform: 'translate(-50%, -50%)',
                                 width: '400px',
                                 background: '#ffffff',
                                 borderRadius: '24px',
