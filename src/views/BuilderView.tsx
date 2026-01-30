@@ -96,6 +96,14 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
     const pathContainerRef = useRef<HTMLDivElement>(null)
     const pathItemRefs = useRef<(HTMLDivElement | null)[]>([])
 
+    // -- SCROLL RESET REF --
+    const contentScrollRef = useRef<HTMLDivElement>(null)
+    useEffect(() => {
+        if (contentScrollRef.current) {
+            contentScrollRef.current.scrollTop = 0
+        }
+    }, [currentStep])
+
     // ...
 
     // Guide State (Removed unused)
@@ -485,7 +493,7 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
                     </div>
 
                     {/* Content Detail */}
-                    <div style={{ flex: 1, overflowY: 'auto', padding: '0 24px 160px' }}> {/* Extra padding for comfortable scroll above chat */}
+                    <div ref={contentScrollRef} style={{ flex: 1, overflowY: 'auto', padding: '0 24px 160px' }}> {/* Extra padding for comfortable scroll above chat */}
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
