@@ -1,7 +1,7 @@
 .landing-page {
     height: 100vh;
-    background: black;
-    color: white;
+    background: white;
+    color: #111;
     overflow: hidden;
     position: relative;
     display: flex;
@@ -27,17 +27,18 @@
 
 .landing-login-btn {
     background: transparent;
-    border: 1px solid #333;
-    color: #888;
+    border: 1px solid #e5e7eb;
+    color: #666;
     padding: 8px 16px;
     cursor: pointer;
     font-size: 0.9rem;
     transition: all 0.2s;
+    border-radius: 6px;
 }
 
 .landing-login-btn:hover {
-    border-color: #666;
-    color: white;
+    border-color: #111;
+    color: #111;
 }
 
 .landing-main {
@@ -66,16 +67,17 @@
     margin-bottom: 30px;
     letter-spacing: -0.03em;
     margin-top: 0;
+    color: #111;
 }
 
 .text-gradient {
-    background: linear-gradient(to right, #fff, #666);
+    background: linear-gradient(to right, #111, #999);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .landing-desc {
-    color: #888;
+    color: #4b5563;
     font-size: 1.2rem;
     max-width: 600px;
     line-height: 1.6;
@@ -91,17 +93,18 @@
     padding: 18px 48px;
     font-size: 1.1rem;
     font-weight: 700;
-    background: white;
-    color: black;
+    background: #111;
+    color: white;
     border: none;
     cursor: pointer;
     border-radius: 9999px;
     transition: transform 0.2s, background-color 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .landing-cta-btn:hover {
     transform: scale(1.05);
-    background-color: #f0f0f0;
+    background-color: #333;
 }
 
 .landing-features {
@@ -129,7 +132,7 @@
 
 .feature-divider {
     width: 40px;
-    border-top: 1px dashed #333;
+    border-top: 1px dashed #e5e7eb;
     margin-top: 5px;
     /* Adjust alignment with icons */
 }
