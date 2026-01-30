@@ -55,6 +55,8 @@ const CONTEXT_GUIDES: Record<string, { desc: string, qs: string[] }> = {
 const BuilderView = ({ setView, current }: BuilderViewProps) => {
     // --- MOBILE STATE ---
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 480)
+    // --- DESKTOP STATE ---
+    const [desktopFooterExpanded, setDesktopFooterExpanded] = useState(false)
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth <= 480)
@@ -774,48 +776,84 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
                         </div>
                     </div>
                 </section >
-                <section style={{ height: '320px', borderTop: '1px solid var(--dash-border)', display: 'grid', gridTemplateColumns: '1.2fr 1fr', background: 'var(--dash-bg)', zIndex: 100 }}>
-                    <div style={{ borderRight: '1px solid var(--dash-border)', padding: '32px', overflowY: 'auto' }}>
-                        {selectedIds.length > 0 ? (() => {
-                            const lastId = selectedIds[selectedIds.length - 1]
-                            let targetOption: ScenarioOption | null = null
-                            const traverse = (opts: ScenarioOption[]) => { for (const o of opts) { if (o.id === lastId) { targetOption = o; return } if (o.children) traverse(o.children) } }
-                            traverse(SCENARIO_DATA)
-                            if (!targetOption) return null
-                            const opt = targetOption as ScenarioOption
-                            return (
-                                <>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px', color: 'var(--dash-text)' }}>
-                                        <h2 style={{ fontSize: '24px', fontWeight: 700, margin: 0 }}>{opt.name}</h2>
-                                        <span style={{ padding: '4px 8px', background: 'var(--dash-surface-highlight)', borderRadius: '4px', fontSize: '12px', color: 'var(--dash-muted)' }}>{DEPTH_STEPS[selectedIds.length - 1]}</span>
-                                    </div>
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '24px' }}>
-                                        <div style={{ background: 'var(--dash-surface)', padding: '16px', borderRadius: '12px', border: '1px solid var(--dash-border)' }}>
-                                            <div style={{ fontSize: '12px', color: 'var(--dash-muted)', marginBottom: '4px' }}>PRICE</div>
-                                            <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--dash-text)' }}>{opt.indexValue.toLocaleString()}</div>
-                                            <div style={{ fontSize: '11px', color: 'var(--dash-muted)' }}>{opt.indexName}</div>
-                                        </div>
-                                        <div style={{ background: 'var(--dash-surface)', padding: '16px', borderRadius: '12px', border: '1px solid var(--dash-border)' }}>
-                                            <div style={{ fontSize: '12px', color: 'var(--dash-muted)', marginBottom: '4px' }}>CHANGE</div>
-                                            <div style={{ fontSize: '20px', fontWeight: 700, color: opt.change >= 0 ? 'var(--dash-danger)' : 'var(--dash-blue)' }}>{opt.change > 0 ? '+' : ''} {Math.abs(opt.change)}%</div>
-                                        </div>
-                                    </div>
-                                    <p style={{ fontSize: '14px', color: 'var(--dash-muted)', lineHeight: 1.6 }}>{opt.description}</p>
-                                </>
-                            )
-                        })() : null}
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', background: 'var(--dash-bg)' }}>
-                        <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--dash-border)', display: 'flex', alignItems: 'center', gap: '8px' }}><Sparkles size={18} color="var(--dash-primary)" fill="var(--dash-primary)" /><span style={{ fontWeight: 700, fontSize: '14px', color: 'var(--dash-text)' }}>AI Assistant</span></div>
-                        <div style={{ flex: 1, padding: '20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                            {chatMessages.map(msg => (<div key={msg.id} style={{ alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start', background: msg.sender === 'user' ? 'var(--dash-primary)' : 'var(--dash-surface)', padding: '12px 16px', borderRadius: msg.sender === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px', maxWidth: '85%', fontSize: '14px', lineHeight: 1.5, color: msg.sender === 'user' ? 'white' : 'var(--dash-text)' }}>{msg.text}</div>))}
-                        </div>
-                        <div style={{ padding: '16px', borderTop: '1px solid var(--dash-border)', display: 'flex', gap: '12px' }}>
-                            <input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()} placeholder="질문하기..." style={{ flex: 1, background: 'var(--dash-surface)', border: '1px solid var(--dash-border)', padding: '12px 20px', color: 'var(--dash-text)', fontSize: '14px', outline: 'none', borderRadius: '9999px' }} />
-                            <button onClick={() => handleSendMessage()} style={{ background: 'var(--dash-primary)', border: 'none', color: 'white', padding: '0 20px', cursor: 'pointer', borderRadius: '9999px' }}><Send size={18} /></button>
+                <motion.section
+                    initial={{ height: 60 }}
+                    animate={{ height: desktopFooterExpanded ? 350 : 60 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                    style={{
+                        position: 'absolute', bottom: 0, left: 0, right: 0,
+                        borderTop: '1px solid var(--dash-border)',
+                        background: 'var(--dash-bg)',
+                        zIndex: 100,
+                        boxShadow: '0 -4px 20px rgba(0,0,0,0.1)',
+                        display: 'flex', flexDirection: 'column'
+                    }}
+                >
+                    {/* Handle / Header Area - Always Visible */}
+                    <div
+                        onClick={() => setDesktopFooterExpanded(!desktopFooterExpanded)}
+                        style={{
+                            height: '60px',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            cursor: 'pointer',
+                            borderBottom: desktopFooterExpanded ? '1px solid var(--dash-border)' : 'none',
+                            background: 'var(--dash-surface)'
+                        }}
+                    >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <div style={{ width: '40px', height: '4px', background: 'var(--dash-border)', borderRadius: '2px' }} />
+                            {!desktopFooterExpanded && (
+                                <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--dash-muted)' }}>
+                                    분석 및 AI 채팅 열기
+                                </span>
+                            )}
                         </div>
                     </div>
-                </section>
+
+                    {/* Content Area - Visible when Expanded */}
+                    <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1.2fr 1fr', overflow: 'hidden' }}>
+                        <div style={{ borderRight: '1px solid var(--dash-border)', padding: '32px', overflowY: 'auto' }}>
+                            {selectedIds.length > 0 ? (() => {
+                                const lastId = selectedIds[selectedIds.length - 1]
+                                let targetOption: ScenarioOption | null = null
+                                const traverse = (opts: ScenarioOption[]) => { for (const o of opts) { if (o.id === lastId) { targetOption = o; return } if (o.children) traverse(o.children) } }
+                                traverse(SCENARIO_DATA)
+                                if (!targetOption) return null
+                                const opt = targetOption as ScenarioOption
+                                return (
+                                    <>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px', color: 'var(--dash-text)' }}>
+                                            <h2 style={{ fontSize: '24px', fontWeight: 700, margin: 0 }}>{opt.name}</h2>
+                                            <span style={{ padding: '4px 8px', background: 'var(--dash-surface-highlight)', borderRadius: '4px', fontSize: '12px', color: 'var(--dash-muted)' }}>{DEPTH_STEPS[selectedIds.length - 1]}</span>
+                                        </div>
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '24px' }}>
+                                            <div style={{ background: 'var(--dash-surface)', padding: '16px', borderRadius: '12px', border: '1px solid var(--dash-border)' }}>
+                                                <div style={{ fontSize: '12px', color: 'var(--dash-muted)', marginBottom: '4px' }}>PRICE</div>
+                                                <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--dash-text)' }}>{opt.indexValue.toLocaleString()}</div>
+                                                <div style={{ fontSize: '11px', color: 'var(--dash-muted)' }}>{opt.indexName}</div>
+                                            </div>
+                                            <div style={{ background: 'var(--dash-surface)', padding: '16px', borderRadius: '12px', border: '1px solid var(--dash-border)' }}>
+                                                <div style={{ fontSize: '12px', color: 'var(--dash-muted)', marginBottom: '4px' }}>CHANGE</div>
+                                                <div style={{ fontSize: '20px', fontWeight: 700, color: opt.change >= 0 ? 'var(--dash-danger)' : 'var(--dash-blue)' }}>{opt.change > 0 ? '+' : ''} {Math.abs(opt.change)}%</div>
+                                            </div>
+                                        </div>
+                                        <p style={{ fontSize: '14px', color: 'var(--dash-muted)', lineHeight: 1.6 }}>{opt.description}</p>
+                                    </>
+                                )
+                            })() : null}
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', background: 'var(--dash-bg)' }}>
+                            <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--dash-border)', display: 'flex', alignItems: 'center', gap: '8px' }}><Sparkles size={18} color="var(--dash-primary)" fill="var(--dash-primary)" /><span style={{ fontWeight: 700, fontSize: '14px', color: 'var(--dash-text)' }}>AI Assistant</span></div>
+                            <div style={{ flex: 1, padding: '20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                {chatMessages.map(msg => (<div key={msg.id} style={{ alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start', background: msg.sender === 'user' ? 'var(--dash-primary)' : 'var(--dash-surface)', padding: '12px 16px', borderRadius: msg.sender === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px', maxWidth: '85%', fontSize: '14px', lineHeight: 1.5, color: msg.sender === 'user' ? 'white' : 'var(--dash-text)' }}>{msg.text}</div>))}
+                            </div>
+                            <div style={{ padding: '16px', borderTop: '1px solid var(--dash-border)', display: 'flex', gap: '12px' }}>
+                                <input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()} placeholder="질문하기..." style={{ flex: 1, background: 'var(--dash-surface)', border: '1px solid var(--dash-border)', padding: '12px 20px', color: 'var(--dash-text)', fontSize: '14px', outline: 'none', borderRadius: '9999px' }} />
+                                <button onClick={() => handleSendMessage()} style={{ background: 'var(--dash-primary)', border: 'none', color: 'white', padding: '0 20px', cursor: 'pointer', borderRadius: '9999px' }}><Send size={18} /></button>
+                            </div>
+                        </div>
+                    </div>
+                </motion.section>
             </main >
             <FloatingNav setView={setView} current={current} />
         </div >
