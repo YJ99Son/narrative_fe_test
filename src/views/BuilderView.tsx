@@ -781,7 +781,7 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
                         })() : null}
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', background: '#0a0a0a' }}>
-                        <div style={{ padding: '16px 24px', borderBottom: '1px solid #222', display: 'flex', alignItems: 'center', gap: '8px' }}><MessageCircle size={18} color="#3b82f6" /><span style={{ fontWeight: 700, fontSize: '14px', color: 'white' }}>AI Assistant</span></div>
+                        <div style={{ padding: '16px 24px', borderBottom: '1px solid #222', display: 'flex', alignItems: 'center', gap: '8px' }}><Sparkles size={18} color="#3b82f6" fill="#3b82f6" /><span style={{ fontWeight: 700, fontSize: '14px', color: 'white' }}>AI Assistant</span></div>
                         <div style={{ flex: 1, padding: '20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                             {chatMessages.map(msg => (<div key={msg.id} style={{ alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start', background: msg.sender === 'user' ? '#3b82f6' : '#222', padding: '12px 16px', borderRadius: msg.sender === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px', maxWidth: '85%', fontSize: '14px', lineHeight: 1.5, color: 'white' }}>{msg.text}</div>))}
                         </div>

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { ViewState } from '../data'
-import FloatingNav from '../components/FloatingNav'
+// import FloatingNav from '../components/FloatingNav'
 import { ArrowLeft, CheckCircle, XCircle, ArrowRight, HelpCircle, Trophy } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
