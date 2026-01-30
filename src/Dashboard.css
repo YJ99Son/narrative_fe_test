@@ -31,30 +31,7 @@
     --font-main: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        /* DARK MODE OVERRIDES */
-        --dash-bg: #121212;
-        --dash-surface: #181818;
-        --dash-surface-highlight: #282828;
-        --dash-border: #282828;
-        --dash-primary: #2979FF;
-        --dash-secondary: #5393ff;
-        --dash-danger: #ff6b6b;
-        --dash-blue: #4dabf7;
-        --dash-text: #ffffff;
-        --dash-muted: #b3b3b3;
 
-        --dash-header-bg: rgba(18, 18, 18, 0.95);
-        --dash-mypage-header-bg: rgba(18, 18, 18, 0.95);
-        --dash-shadow: rgba(0, 0, 0, 0.2);
-        --dash-card-hover: #282828;
-        --dash-ticker-bg: #181818;
-
-        --dash-nav-bg: rgba(20, 20, 20, 0.85);
-        --dash-nav-border: rgba(255, 255, 255, 0.1);
-    }
-}
 
 body {
     background-color: var(--dash-bg);
