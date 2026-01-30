@@ -72,7 +72,7 @@ const MyScenariosView = ({ setView, current }: MyScenariosViewProps) => {
 
     if (isMobile) {
         return (
-            <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: '#050505' }}>
+            <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--dash-bg)' }}>
                 <div style={{ flex: 1, overflow: 'hidden' }}>
                     <MobileMyPage scenarios={scenarios} setView={setView} />
                 </div>
@@ -102,16 +102,16 @@ const MyScenariosView = ({ setView, current }: MyScenariosViewProps) => {
     const winRate = ((profitCount / totalScenarios) * 100).toFixed(0)
 
     return (
-        <div className="dashboard-page my-scenarios-page" style={{ background: '#121212', minHeight: '100vh', color: 'white', display: 'flex', flexDirection: 'column', fontFamily: "'Inter', sans-serif" }}>
+        <div className="dashboard-page my-scenarios-page" style={{ background: 'var(--dash-bg)', minHeight: '100vh', color: 'var(--dash-text)', display: 'flex', flexDirection: 'column', fontFamily: "'Inter', sans-serif" }}>
             {/* Header / Nav Area */}
-            <header className="dashboard-header" style={{ padding: '24px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#121212' }}>
+            <header className="dashboard-header" style={{ padding: '24px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--dash-header-bg)', backdropFilter: 'blur(10px)' }}>
                 <div style={{ fontWeight: 800, fontSize: '24px', letterSpacing: '-0.02em', display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <Activity size={24} color="#2979FF" />
                     NARRATIVE<span style={{ color: '#2979FF' }}>.</span>FLOW
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
-                    <div style={{ color: '#b3b3b3', fontSize: '14px', fontWeight: 700, cursor: 'pointer', transition: 'color 0.2s' }} onClick={() => setView('DASHBOARD')}>DASHBOARD</div>
-                    <div style={{ color: 'white', fontSize: '14px', fontWeight: 700, borderBottom: '2px solid #2979FF', paddingBottom: '4px' }}>LIBRARY</div>
+                    <div style={{ color: 'var(--dash-muted)', fontSize: '14px', fontWeight: 700, cursor: 'pointer', transition: 'color 0.2s' }} onClick={() => setView('DASHBOARD')}>DASHBOARD</div>
+                    <div style={{ color: 'var(--dash-text)', fontSize: '14px', fontWeight: 700, borderBottom: '2px solid var(--dash-primary)', paddingBottom: '4px' }}>LIBRARY</div>
                     <button onClick={() => setView('QUIZ')} style={{
                         background: 'white', border: 'none', color: 'black',
                         padding: '12px 32px', borderRadius: '30px', fontSize: '14px', fontWeight: 700,
@@ -137,48 +137,48 @@ const MyScenariosView = ({ setView, current }: MyScenariosViewProps) => {
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '24px' }}>
                         {/* Card 1: Interest */}
-                        <div style={{ background: '#181818', borderRadius: '8px', padding: '24px', transition: 'background 0.3s', cursor: 'pointer' }}
-                            onMouseEnter={(e) => e.currentTarget.style.background = '#282828'}
-                            onMouseLeave={(e) => e.currentTarget.style.background = '#181818'}
+                        <div style={{ background: 'var(--dash-surface)', borderRadius: '8px', padding: '24px', transition: 'background 0.3s', cursor: 'pointer' }}
+                            onMouseEnter={(e) => e.currentTarget.style.background = 'var(--dash-surface-highlight)'}
+                            onMouseLeave={(e) => e.currentTarget.style.background = 'var(--dash-surface)'}
                         >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px', color: '#b3b3b3' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px', color: 'var(--dash-muted)' }}>
                                 <PieChart size={20} /> <span style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '1px' }}>MAIN INTEREST</span>
                             </div>
                             <div style={{ fontSize: '28px', fontWeight: 800, color: '#fff', marginBottom: '12px' }}>{mainInterest}</div>
-                            <p style={{ margin: '0', color: '#b3b3b3', fontSize: '14px' }}>
+                            <p style={{ margin: '0', color: 'var(--dash-muted)', fontSize: '14px' }}>
                                 전체 시나리오의 <span style={{ color: '#2979FF', fontWeight: 700 }}>65%</span>가<br />이 분야에 집중되어 있습니다.
                             </p>
                         </div>
 
                         {/* Card 2: Activity */}
-                        <div style={{ background: '#181818', borderRadius: '8px', padding: '24px', transition: 'background 0.3s', cursor: 'pointer' }}
-                            onMouseEnter={(e) => e.currentTarget.style.background = '#282828'}
-                            onMouseLeave={(e) => e.currentTarget.style.background = '#181818'}
+                        <div style={{ background: 'var(--dash-surface)', borderRadius: '8px', padding: '24px', transition: 'background 0.3s', cursor: 'pointer' }}
+                            onMouseEnter={(e) => e.currentTarget.style.background = 'var(--dash-surface-highlight)'}
+                            onMouseLeave={(e) => e.currentTarget.style.background = 'var(--dash-surface)'}
                         >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px', color: '#b3b3b3' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px', color: 'var(--dash-muted)' }}>
                                 <BookOpen size={20} /> <span style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '1px' }}>STUDY ACTIVITY</span>
                             </div>
                             <div style={{ fontSize: '28px', fontWeight: 800, color: '#fff', marginBottom: '12px' }}>{totalScenarios} Scenarios</div>
                             <div style={{ display: 'flex', gap: '4px', marginBottom: '12px' }}>
                                 {[1, 2, 3, 4, 5].map(i => (
-                                    <div key={i} style={{ flex: 1, height: '4px', background: i <= totalScenarios ? '#2979FF' : '#333', borderRadius: '2px' }}></div>
+                                    <div key={i} style={{ flex: 1, height: '4px', background: i <= totalScenarios ? 'var(--dash-primary)' : 'var(--dash-border)', borderRadius: '2px' }}></div>
                                 ))}
                             </div>
-                            <p style={{ margin: '0', color: '#b3b3b3', fontSize: '14px' }}>
+                            <p style={{ margin: '0', color: 'var(--dash-muted)', fontSize: '14px' }}>
                                 꾸준한 학습이 수익의 지름길입니다.
                             </p>
                         </div>
 
                         {/* Card 3: Performance */}
-                        <div style={{ background: '#181818', borderRadius: '8px', padding: '24px', transition: 'background 0.3s', cursor: 'pointer' }}
-                            onMouseEnter={(e) => e.currentTarget.style.background = '#282828'}
-                            onMouseLeave={(e) => e.currentTarget.style.background = '#181818'}
+                        <div style={{ background: 'var(--dash-surface)', borderRadius: '8px', padding: '24px', transition: 'background 0.3s', cursor: 'pointer' }}
+                            onMouseEnter={(e) => e.currentTarget.style.background = 'var(--dash-surface-highlight)'}
+                            onMouseLeave={(e) => e.currentTarget.style.background = 'var(--dash-surface)'}
                         >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px', color: '#b3b3b3' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px', color: 'var(--dash-muted)' }}>
                                 <TrendingUp size={20} /> <span style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '1px' }}>ESTIMATED WIN RATE</span>
                             </div>
                             <div style={{ fontSize: '48px', fontWeight: 800, color: '#2979FF', marginBottom: '8px', lineHeight: 1 }}>{winRate}<span style={{ fontSize: '24px' }}>%</span></div>
-                            <p style={{ margin: '0', color: '#b3b3b3', fontSize: '14px' }}>
+                            <p style={{ margin: '0', color: 'var(--dash-muted)', fontSize: '14px' }}>
                                 <span style={{ color: '#fff', fontWeight: 700 }}>{profitCount}개</span>의 시나리오 수익중
                             </p>
                         </div>
@@ -189,7 +189,7 @@ const MyScenariosView = ({ setView, current }: MyScenariosViewProps) => {
                 <section>
                     <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'end' }}>
                         <h3 style={{ fontSize: '24px', fontWeight: 700, margin: 0 }}>학습 내역</h3>
-                        <div style={{ fontSize: '14px', color: '#b3b3b3', fontWeight: 700, cursor: 'pointer' }}>SEE ALL</div>
+                        <div style={{ fontSize: '14px', color: 'var(--dash-muted)', fontWeight: 700, cursor: 'pointer' }}>SEE ALL</div>
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -197,8 +197,8 @@ const MyScenariosView = ({ setView, current }: MyScenariosViewProps) => {
                         <div style={{
                             display: 'grid', gridTemplateColumns: '40px 2fr 1.5fr 1fr 1.5fr',
                             padding: '0 16px 12px',
-                            borderBottom: '1px solid #282828',
-                            color: '#b3b3b3', fontSize: '12px', fontWeight: 600, letterSpacing: '1px'
+                            borderBottom: '1px solid var(--dash-border)',
+                            color: 'var(--dash-muted)', fontSize: '12px', fontWeight: 600, letterSpacing: '1px'
                         }}>
                             <div>#</div>
                             <div>TITLE</div>
@@ -223,7 +223,7 @@ const MyScenariosView = ({ setView, current }: MyScenariosViewProps) => {
                                         cursor: 'default'
                                     }}
                                     className="scenario-row"
-                                    onMouseEnter={(e) => e.currentTarget.style.background = '#2a2a2a'}
+                                    onMouseEnter={(e) => e.currentTarget.style.background = 'var(--dash-surface)'}
                                     onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                                     onClick={() => {
                                         localStorage.setItem('narrative_active_scenario', JSON.stringify({
