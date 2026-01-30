@@ -179,7 +179,7 @@ const MyScenariosView = ({ setView, current }: MyScenariosViewProps) => {
                             </div>
                             <div style={{ fontSize: '48px', fontWeight: 800, color: '#2979FF', marginBottom: '8px', lineHeight: 1 }}>{winRate}<span style={{ fontSize: '24px' }}>%</span></div>
                             <p style={{ margin: '0', color: 'var(--dash-muted)', fontSize: '14px' }}>
-                                <span style={{ color: '#fff', fontWeight: 700 }}>{profitCount}개</span>의 시나리오 수익중
+                                <span style={{ color: 'var(--dash-text)', fontWeight: 700 }}>{profitCount}개</span>의 시나리오 수익중
                             </p>
                         </div>
                     </div>
@@ -234,28 +234,28 @@ const MyScenariosView = ({ setView, current }: MyScenariosViewProps) => {
                                         setView('PRESENTATION')
                                     }}
                                 >
-                                    <div style={{ color: '#b3b3b3', fontSize: '14px' }}>{index + 1}</div>
+                                    <div style={{ color: 'var(--dash-muted)', fontSize: '14px' }}>{index + 1}</div>
 
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                                         {/* Icon */}
                                         <div style={{
-                                            width: '40px', height: '40px', background: '#333',
+                                            width: '40px', height: '40px', background: 'var(--dash-surface-highlight)',
                                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            color: '#b3b3b3', fontWeight: 700, fontSize: '14px'
+                                            color: 'var(--dash-muted)', fontWeight: 700, fontSize: '14px'
                                         }}>
                                             {scenario.stock[0]}
                                         </div>
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <span style={{ fontSize: '16px', fontWeight: 500, color: 'white' }}>{scenario.stock}</span>
-                                            <span style={{ fontSize: '12px', color: '#b3b3b3' }}>{scenario.stockCode}</span>
+                                            <span style={{ fontSize: '16px', fontWeight: 500, color: 'var(--dash-text)' }}>{scenario.stock}</span>
+                                            <span style={{ fontSize: '12px', color: 'var(--dash-muted)' }}>{scenario.stockCode}</span>
                                         </div>
                                     </div>
 
-                                    <div style={{ color: '#b3b3b3', fontSize: '14px' }}>
+                                    <div style={{ color: 'var(--dash-muted)', fontSize: '14px' }}>
                                         {formatDate(scenario.createdAt)}
                                     </div>
 
-                                    <div style={{ color: '#b3b3b3', fontSize: '14px' }}>
+                                    <div style={{ color: 'var(--dash-muted)', fontSize: '14px' }}>
                                         {scenario.path[1]}
                                     </div>
 
@@ -266,9 +266,9 @@ const MyScenariosView = ({ setView, current }: MyScenariosViewProps) => {
                             )
                         })}
                     </div>
-                </section>
-            </main>
-        </div>
+                </section >
+            </main >
+        </div >
     )
 }
 

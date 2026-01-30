@@ -445,8 +445,8 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
                             onClick={handlePrevStep}
                             disabled={currentStep === 0}
                             style={{
-                                padding: '10px', borderRadius: '50%', background: 'var(--dash-shadow)', border: 'none', color: 'var(--dash-text)',
-                                opacity: currentStep === 0 ? 0.3 : 1, backdropFilter: 'blur(4px)'
+                                padding: '10px', borderRadius: '50%', background: 'var(--dash-surface)', border: 'none', color: 'var(--dash-text)',
+                                opacity: currentStep === 0 ? 0.3 : 1, backdropFilter: 'blur(4px)', boxShadow: '0 2px 8px var(--dash-shadow)'
                             }}
                         >
                             <ChevronLeft size={24} />
@@ -458,8 +458,8 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
                             onClick={handleNextStep}
                             disabled={currentStep === selectedPath.length - 1}
                             style={{
-                                padding: '10px', borderRadius: '50%', background: 'var(--dash-shadow)', border: 'none', color: 'var(--dash-text)',
-                                opacity: currentStep === selectedPath.length - 1 ? 0.3 : 1, backdropFilter: 'blur(4px)'
+                                padding: '10px', borderRadius: '50%', background: 'var(--dash-surface)', border: 'none', color: 'var(--dash-text)',
+                                opacity: currentStep === selectedPath.length - 1 ? 0.3 : 1, backdropFilter: 'blur(4px)', boxShadow: '0 2px 8px var(--dash-shadow)'
                             }}
                         >
                             <ChevronRight size={24} />
@@ -469,7 +469,6 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
                     {/* Content Detail */}
                     <div style={{ padding: '0 24px 160px' }}> {/* Extra padding for comfortable scroll above chat */}
                         <motion.div
-                            key={currentOption?.id}
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.3 }}
@@ -660,18 +659,18 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
 
     // --- DESKTOP RENDER (Unchanged logic, just using foreign data) ---
     return (
-        <div style={{ background: '#050505', height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <header style={{ padding: '20px 40px', borderBottom: '1px solid #222', background: '#050505', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 100 }}>
-                <div style={{ fontWeight: 800, fontSize: '1.2rem', letterSpacing: '0.1em', color: 'white' }}>
+        <div style={{ background: 'var(--dash-bg)', height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+            <header style={{ padding: '20px 40px', borderBottom: '1px solid var(--dash-border)', background: 'var(--dash-bg)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 100 }}>
+                <div style={{ fontWeight: 800, fontSize: '1.2rem', letterSpacing: '0.1em', color: 'var(--dash-text)' }}>
                     NARRATIVE<span style={{ opacity: 0.5 }}>FLOW</span>
                 </div>
                 <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', gap: '8px', background: '#111', padding: '6px 12px', borderRadius: '8px', border: '1px solid #333' }}>
-                        <button onClick={() => setScale(s => Math.min(s + 0.1, 1))} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer' }}><ZoomIn size={16} /></button>
-                        <span style={{ fontSize: '12px', color: '#888', minWidth: '40px', textAlign: 'center' }}>{Math.round(scale * 100)}%</span>
-                        <button onClick={() => setScale(s => Math.max(s - 0.1, 0.4))} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer' }}><ZoomOut size={16} /></button>
-                        <div style={{ width: '1px', background: '#333', margin: '0 4px' }} />
-                        <button onClick={() => { setScale(1); setPan({ x: 0, y: 0 }) }} style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer' }}><RotateCcw size={14} /></button>
+                    <div style={{ display: 'flex', gap: '8px', background: 'var(--dash-surface)', padding: '6px 12px', borderRadius: '8px', border: '1px solid var(--dash-border)' }}>
+                        <button onClick={() => setScale(s => Math.min(s + 0.1, 1))} style={{ background: 'none', border: 'none', color: 'var(--dash-text)', cursor: 'pointer' }}><ZoomIn size={16} /></button>
+                        <span style={{ fontSize: '12px', color: 'var(--dash-muted)', minWidth: '40px', textAlign: 'center' }}>{Math.round(scale * 100)}%</span>
+                        <button onClick={() => setScale(s => Math.max(s - 0.1, 0.4))} style={{ background: 'none', border: 'none', color: 'var(--dash-text)', cursor: 'pointer' }}><ZoomOut size={16} /></button>
+                        <div style={{ width: '1px', background: 'var(--dash-border)', margin: '0 4px' }} />
+                        <button onClick={() => { setScale(1); setPan({ x: 0, y: 0 }) }} style={{ background: 'none', border: 'none', color: 'var(--dash-text)', cursor: 'pointer' }}><RotateCcw size={14} /></button>
                     </div>
                     <button className="action-btn" onClick={() => setView('MYSCENARIOS')} style={{
                         background: '#3b82f6', color: 'white', border: 'none', padding: '8px 24px', borderRadius: '9999px',
@@ -682,7 +681,7 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
                 </div>
             </header>
             <main style={{ flex: 1, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-                <section className="builder-canvas" style={{ flex: 1, width: '100%', height: '100%', cursor: isDragging.current ? 'grabbing' : 'grab', background: 'radial-gradient(circle at 1px 1px, #222 1px, #000 0)', backgroundSize: '40px 40px', overflow: 'hidden' }} onWheel={handleWheel} onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
+                <section className="builder-canvas" style={{ flex: 1, width: '100%', height: '100%', cursor: isDragging.current ? 'grabbing' : 'grab', background: 'radial-gradient(circle at 1px 1px, var(--dash-border) 1px, transparent 0)', backgroundSize: '40px 40px', overflow: 'hidden' }} onWheel={handleWheel} onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
                     <div style={{ transform: `translate(${pan.x}px, ${pan.y}px) scale(${scale})`, transformOrigin: '50% 50%', transition: isDragging.current ? 'none' : 'transform 0.1s ease-out', width: '5000px', height: '5000px', position: 'relative' }}>
                         <div style={{ position: 'absolute', left: '2500px', top: '2500px', transform: 'translate(-50%, -50%)', display: 'flex', gap: '80px' }}>
                             <Xwrapper>
@@ -690,7 +689,7 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
                                     const options = getOptionsForDepth(depth)
                                     return (
                                         <div key={depth} style={{ display: 'flex', flexDirection: 'column', minWidth: '320px', maxWidth: '320px', gap: '24px' }}>
-                                            <div style={{ textTransform: 'uppercase', fontSize: '12px', fontWeight: 700, color: '#666', marginBottom: '10px', textAlign: 'center', userSelect: 'none' }}>{step}</div>
+                                            <div style={{ textTransform: 'uppercase', fontSize: '12px', fontWeight: 700, color: 'var(--dash-muted)', marginBottom: '10px', textAlign: 'center', userSelect: 'none' }}>{step}</div>
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                                                 <AnimatePresence>
                                                     {options.length > 0 ? options.map(opt => {
@@ -700,20 +699,20 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
                                                             <motion.div key={opt.id} id={opt.id} onMouseDown={e => e.stopPropagation()} onClick={e => { e.stopPropagation(); handleSelect(opt, depth) }}
                                                                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                                                                 style={{
-                                                                    background: isSel ? '#2979FF' : '#0a0a0a',
-                                                                    border: isSel ? '1px solid #2979FF' : '1px solid #333',
+                                                                    background: isSel ? 'var(--dash-primary)' : 'var(--dash-surface)',
+                                                                    border: isSel ? '1px solid var(--dash-primary)' : '1px solid var(--dash-border)',
                                                                     borderRadius: '16px', padding: '24px', cursor: 'pointer', position: 'relative',
                                                                     opacity: (selectedIds[depth] && !isSel) ? 0.3 : 1,
-                                                                    boxShadow: isSel ? '0 0 30px rgba(41, 121, 255, 0.3)' : '0 4px 6px rgba(0,0,0,0.5)', zIndex: isSel ? 20 : 10
+                                                                    boxShadow: isSel ? '0 0 30px rgba(41, 121, 255, 0.3)' : '0 4px 6px var(--dash-shadow)', zIndex: isSel ? 20 : 10
                                                                 }}
                                                             >
-                                                                <h4 style={{ margin: '0 0 8px 0', fontSize: '18px', color: isSel ? '#fff' : '#ccc', userSelect: 'none' }}>{opt.name}</h4>
-                                                                <p style={{ margin: 0, fontSize: '13px', color: isSel ? 'rgba(255,255,255,0.8)' : '#666', userSelect: 'none' }}>{opt.description}</p>
-                                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '16px', borderTop: isSel ? '1px solid rgba(255,255,255,0.2)' : '1px solid #222', paddingTop: '12px' }}>
-                                                                    <span style={{ fontSize: '12px', color: isSel ? 'rgba(255,255,255,0.8)' : '#555', userSelect: 'none' }}>{opt.indexName}</span>
+                                                                <h4 style={{ margin: '0 0 8px 0', fontSize: '18px', color: isSel ? '#fff' : 'var(--dash-text)', userSelect: 'none' }}>{opt.name}</h4>
+                                                                <p style={{ margin: 0, fontSize: '13px', color: isSel ? 'rgba(255,255,255,0.8)' : 'var(--dash-muted)', userSelect: 'none' }}>{opt.description}</p>
+                                                                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '16px', borderTop: isSel ? '1px solid rgba(255,255,255,0.2)' : '1px solid var(--dash-border)', paddingTop: '12px' }}>
+                                                                    <span style={{ fontSize: '12px', color: isSel ? 'rgba(255,255,255,0.8)' : 'var(--dash-muted)', userSelect: 'none' }}>{opt.indexName}</span>
                                                                     <div style={{ textAlign: 'right' }}>
-                                                                        <div style={{ fontSize: '14px', fontWeight: 700, color: '#eee', userSelect: 'none' }}>{opt.indexValue.toLocaleString()}</div>
-                                                                        <div style={{ fontSize: '12px', fontWeight: 600, color: isSel ? 'white' : (opt.change >= 0 ? '#2979FF' : '#ef4444'), userSelect: 'none' }}>{Math.abs(opt.change)}%</div>
+                                                                        <div style={{ fontSize: '14px', fontWeight: 700, color: isSel ? '#fff' : 'var(--dash-text)', userSelect: 'none' }}>{opt.indexValue.toLocaleString()}</div>
+                                                                        <div style={{ fontSize: '12px', fontWeight: 600, color: isSel ? 'white' : (opt.change >= 0 ? 'var(--dash-danger)' : 'var(--dash-blue)'), userSelect: 'none' }}>{Math.abs(opt.change)}%</div>
                                                                     </div>
                                                                 </div>
                                                             </motion.div>
@@ -749,8 +748,8 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
                         </div>
                     </div>
                 </section >
-                <section style={{ height: '320px', borderTop: '1px solid #222', display: 'grid', gridTemplateColumns: '1.2fr 1fr', background: '#080808', zIndex: 100 }}>
-                    <div style={{ borderRight: '1px solid #222', padding: '32px', overflowY: 'auto' }}>
+                <section style={{ height: '320px', borderTop: '1px solid var(--dash-border)', display: 'grid', gridTemplateColumns: '1.2fr 1fr', background: 'var(--dash-bg)', zIndex: 100 }}>
+                    <div style={{ borderRight: '1px solid var(--dash-border)', padding: '32px', overflowY: 'auto' }}>
                         {selectedIds.length > 0 ? (() => {
                             const lastId = selectedIds[selectedIds.length - 1]
                             let targetOption: ScenarioOption | null = null
@@ -760,34 +759,34 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
                             const opt = targetOption as ScenarioOption
                             return (
                                 <>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px', color: 'white' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px', color: 'var(--dash-text)' }}>
                                         <h2 style={{ fontSize: '24px', fontWeight: 700, margin: 0 }}>{opt.name}</h2>
-                                        <span style={{ padding: '4px 8px', background: '#222', borderRadius: '4px', fontSize: '12px', color: '#888' }}>{DEPTH_STEPS[selectedIds.length - 1]}</span>
+                                        <span style={{ padding: '4px 8px', background: 'var(--dash-surface-highlight)', borderRadius: '4px', fontSize: '12px', color: 'var(--dash-muted)' }}>{DEPTH_STEPS[selectedIds.length - 1]}</span>
                                     </div>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '24px' }}>
-                                        <div style={{ background: '#111', padding: '16px', borderRadius: '12px', border: '1px solid #333' }}>
-                                            <div style={{ fontSize: '12px', color: '#888', marginBottom: '4px' }}>PRICE</div>
-                                            <div style={{ fontSize: '20px', fontWeight: 700, color: '#fff' }}>{opt.indexValue.toLocaleString()}</div>
-                                            <div style={{ fontSize: '11px', color: '#555' }}>{opt.indexName}</div>
+                                        <div style={{ background: 'var(--dash-surface)', padding: '16px', borderRadius: '12px', border: '1px solid var(--dash-border)' }}>
+                                            <div style={{ fontSize: '12px', color: 'var(--dash-muted)', marginBottom: '4px' }}>PRICE</div>
+                                            <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--dash-text)' }}>{opt.indexValue.toLocaleString()}</div>
+                                            <div style={{ fontSize: '11px', color: 'var(--dash-muted)' }}>{opt.indexName}</div>
                                         </div>
-                                        <div style={{ background: '#111', padding: '16px', borderRadius: '12px', border: '1px solid #333' }}>
-                                            <div style={{ fontSize: '12px', color: '#888', marginBottom: '4px' }}>CHANGE</div>
-                                            <div style={{ fontSize: '20px', fontWeight: 700, color: opt.change >= 0 ? '#2979FF' : '#ef4444' }}>{opt.change > 0 ? '+' : ''} {Math.abs(opt.change)}%</div>
+                                        <div style={{ background: 'var(--dash-surface)', padding: '16px', borderRadius: '12px', border: '1px solid var(--dash-border)' }}>
+                                            <div style={{ fontSize: '12px', color: 'var(--dash-muted)', marginBottom: '4px' }}>CHANGE</div>
+                                            <div style={{ fontSize: '20px', fontWeight: 700, color: opt.change >= 0 ? 'var(--dash-danger)' : 'var(--dash-blue)' }}>{opt.change > 0 ? '+' : ''} {Math.abs(opt.change)}%</div>
                                         </div>
                                     </div>
-                                    <p style={{ fontSize: '14px', color: '#aaa', lineHeight: 1.6 }}>{opt.description}</p>
+                                    <p style={{ fontSize: '14px', color: 'var(--dash-muted)', lineHeight: 1.6 }}>{opt.description}</p>
                                 </>
                             )
                         })() : null}
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', background: '#0a0a0a' }}>
-                        <div style={{ padding: '16px 24px', borderBottom: '1px solid #222', display: 'flex', alignItems: 'center', gap: '8px' }}><Sparkles size={18} color="#3b82f6" fill="#3b82f6" /><span style={{ fontWeight: 700, fontSize: '14px', color: 'white' }}>AI Assistant</span></div>
+                    <div style={{ display: 'flex', flexDirection: 'column', background: 'var(--dash-bg)' }}>
+                        <div style={{ padding: '16px 24px', borderBottom: '1px solid var(--dash-border)', display: 'flex', alignItems: 'center', gap: '8px' }}><Sparkles size={18} color="var(--dash-primary)" fill="var(--dash-primary)" /><span style={{ fontWeight: 700, fontSize: '14px', color: 'var(--dash-text)' }}>AI Assistant</span></div>
                         <div style={{ flex: 1, padding: '20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                            {chatMessages.map(msg => (<div key={msg.id} style={{ alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start', background: msg.sender === 'user' ? '#3b82f6' : '#222', padding: '12px 16px', borderRadius: msg.sender === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px', maxWidth: '85%', fontSize: '14px', lineHeight: 1.5, color: 'white' }}>{msg.text}</div>))}
+                            {chatMessages.map(msg => (<div key={msg.id} style={{ alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start', background: msg.sender === 'user' ? 'var(--dash-primary)' : 'var(--dash-surface)', padding: '12px 16px', borderRadius: msg.sender === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px', maxWidth: '85%', fontSize: '14px', lineHeight: 1.5, color: msg.sender === 'user' ? 'white' : 'var(--dash-text)' }}>{msg.text}</div>))}
                         </div>
-                        <div style={{ padding: '16px', borderTop: '1px solid #222', display: 'flex', gap: '12px' }}>
-                            <input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()} placeholder="질문하기..." style={{ flex: 1, background: '#111', border: '1px solid #333', padding: '12px 20px', color: 'white', fontSize: '14px', outline: 'none', borderRadius: '9999px' }} />
-                            <button onClick={() => handleSendMessage()} style={{ background: '#3b82f6', border: 'none', color: 'white', padding: '0 20px', cursor: 'pointer', borderRadius: '9999px' }}><Send size={18} /></button>
+                        <div style={{ padding: '16px', borderTop: '1px solid var(--dash-border)', display: 'flex', gap: '12px' }}>
+                            <input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()} placeholder="질문하기..." style={{ flex: 1, background: 'var(--dash-surface)', border: '1px solid var(--dash-border)', padding: '12px 20px', color: 'var(--dash-text)', fontSize: '14px', outline: 'none', borderRadius: '9999px' }} />
+                            <button onClick={() => handleSendMessage()} style={{ background: 'var(--dash-primary)', border: 'none', color: 'white', padding: '0 20px', cursor: 'pointer', borderRadius: '9999px' }}><Send size={18} /></button>
                         </div>
                     </div>
                 </section>
