@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Narrative-AI Pitch Deck</title>
+    <style>
+        /* 
+         * DESIGN SYSTEM 
+         * Updated to match Frontend: Sharp corners (Terminal Style), Grid Background, Data-heavy look
+         */
+        :root {
+            --bg-color: #000000;
+            --card-bg: #0b0b0b;
+            --primary-blue: #3b82f6;
+            --accent-green: #34d399;
+            --accent-red: #f87171;
+            --text-white: #ffffff;
+            --text-grey: #94a3b8;
+            --line-color: #1f2937;
+            --card-radius: 0px; /* Brutalist / Terminal Style */
+            --tag-radius: 9999px; /* Pills remain round */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            word-break: keep-all;
+        }
+
+        body {
+            font-family: 'Pretendard', 'Inter', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-white);
+            overflow: hidden;
+            /* Grid Pattern from App.css */
+            background-image:
+                linear-gradient(#1f2937 1px, transparent 1px),
+                linear-gradient(90deg, #1f2937 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: center top;
+        }
+        
+        /* Darken the grid slightly via overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: -1;
+        }
+
+        /* UTILS */
+        .highlight { color: var(--primary-blue); }
+        .text-grey { color: var(--text-grey); }
+        .flex-center { display: flex; justify-content: center; align-items: center; }
+        .flex-col { display: flex; flex-direction: column; }
+        .pill { 
+            background: rgba(255,255,255,0.1); 
+            padding: 8px 16px; 
+            border-radius: var(--tag-radius); 
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        /* SLIDESHOW CONTAINER */
+        .deck-container {
+            width: 100vw;
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        /* Hide scrollbar */
+        .deck-container::-webkit-scrollbar {
+            display: none;
+        }
+        .deck-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        section.slide {
+            width: 100vw;
+            height: 100vh;
+            scroll-snap-align: start;
+            padding: 4rem 10%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* HEADER & FOOTER */
+        .slide-header {
+            position: absolute;
+            top: 40px;
+            left: 10%;
+            font-size: 0.9rem;
+            color: var(--text-grey);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .progress-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: var(--primary-blue);
+            width: 0%;
+            transition: width 0.3s ease;
+            z-index: 100;
+        }
+
+        /* TYPOGRAPHY */
+        h1 {
+            font-size: 4rem;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            font-weight: 800;
+        }
+        
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-white);
+            line-height: 1.4;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--text-grey);
+            max-width: 600px;
+        }
+
+        /* CARD STYLES */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--card-radius);
+            padding: 2.5rem;
+            border: 1px solid var(--line-color);
+            transition: transform 0.3s ease, border-color 0.3s;
+            position: relative;
+        }
+        
+        .card:hover {
+            border-color: #334155;
+        }
+        
+        .card.blue {
+            background: rgba(59, 130, 246, 0.1); /* Transparent blue for glass effect */
+            color: white;
+            border: 1px solid var(--primary-blue);
+        }
+        .card.blue p { color: rgba(255,255,255,0.9); }
+        
+        /* Decorative corner markers for "Tech" feel */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            width: 10px;
+            height: 10px;
+            border-top: 2px solid #64748b;
+            border-left: 2px solid #64748b;
+            opacity: 0.5;
+        }
+
+        /* SPECIFIC LAYOUTS */
+        
+        /* Slide 1: Cover */
+        .hero-title span {
+            display: block;
+            /* Update gradient to match new vibe */
+            background: linear-gradient(to right, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Slide 2: Problem (Grid) */
+        .problem-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .problem-item {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .problem-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        /* Slide 3: Solution (Flow) */
+        .solution-flow {
+            display: flex;
+            gap: 2rem;
+            margin-top: 3rem;
+            align-items: stretch;
+        }
+        .flow-step {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+        .flow-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 24px;
+            right: -1rem;
+            width: 2rem;
+            height: 2px;
+            background: var(--line-color);
+            border-top: 2px dashed rgba(255,255,255,0.3);
+            background: none;
+        }
+        .step-number {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            z-index: 2;
+        }
+
+        /* Slide 4: Comparison */
+        .comparison-container {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .comparison-col {
+            flex: 1;
+        }
+
+        /* Slide 5: Features (Builder) */
+        .builder-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 800px;
+        }
+        .b-step {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border-radius: 24px;
+        }
+        .b-step:hover {
+            background: #252930;
+            transform: translateX(10px);
+        }
+        .b-step-num {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+            opacity: 0.5;
+        }
+
+        /* GTM & Risk Grid */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* Slide 8: Roadmap */
+        .roadmap {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4rem;
+            position: relative;
+        }
+        .roadmap::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #333;
+            z-index: 0;
+        }
+        .roadmap-point {
+            position: relative;
+            z-index: 1;
+            width: 30%;
+        }
+        .dot {
+            width: 40px;
+            height: 40px;
+            background: var(--card-bg);
+            border: 4px solid var(--primary-blue);
+            border-radius: 50%;
+            margin-bottom: 1.5rem;
+        }
+
+        /* ANIMATION */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 0.8s forwards;
+        }
+        
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        .delay-4 { animation-delay: 0.8s; }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Key Hint */
+        .key-hint {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            color: rgba(255,255,255,0.3);
+            font-size: 0.8rem;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            section.slide { padding: 2rem 5%; height: auto; min-height: 100vh; }
+            .problem-grid, .solution-flow, .comparison-container, .roadmap, .grid-3 {
+                grid-template-columns: 1fr;
+                flex-direction: column;
+            }
+            .flow-step:not(:last-child)::after { display: none; }
+            .roadmap::before { width: 2px; height: 100%; left: 20px; top: 0; }
+            .roadmap-point { width: 100%; padding-left: 60px; margin-bottom: 2rem; }
+            .dot { position: absolute; left: 0; top: 0; }
+            .key-hint { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="key-hint">Use ↑ ↓ Arrow Keys</div>
+
+    <div class="deck-container" id="deck">
+
+        <!-- SLIDE 1: COVER -->
+        <section class="slide">
+            <div class="slide-header">Narrative-AI Pitch Deck</div>
+            <div class="pill fade-up">Narrative-AI</div>
+            <h1 class="hero-title fade-up delay-1">
+                <span>뉴스를 보지 말고,</span>
+                <span class="highlight">흐름을 설계하세요.</span>
+            </h1>
+            <p class="fade-up delay-2">
+                "어디서 시작해야 할지 모르는" 사람들을 위한<br>
+                맥락 기반 투자 시나리오 큐레이션 플랫폼
+            </p>
+        </section>
+
+        <!-- SLIDE 2: PROBLEM -->
+        <section class="slide">
+            <div class="slide-header">01. Problem Definition</div>
+            <h2 class="fade-up">"투자는 하고 싶은데,<br>어디서부터 시작할지 막막합니다."</h2>
+            
+            <div class="problem-grid fade-up delay-1">
+                <div class="card problem-item">
+                    <div class="problem-icon">⏳</div>
+                    <h3>시간 부족 (Time Scarcity)</h3>
+                    <p>재테크 의지는 있지만, 퇴근 후 복잡한 시장을 공부할 여력이 없는 직장인들의 현실.</p>
+                </div>
+                <div class="card problem-item">
+                    <div class="problem-icon">🤯</div>
+                    <h3>정보 과부하 (Overload)</h3>
+                    <p>정보가 많을수록 결정은 더 어려워집니다.<br>더 많은 뉴스 ≠ 더 좋은 수익률.</p>
+                </div>
+                <div class="card problem-item">
+                    <div class="problem-icon">📉</div>
+                    <h3>묻지마 투자 (Buy & Forget)</h3>
+                    <p>명확한 논리 없이 매수하고 방치하면,<br>작은 등락에도 패닉셀링으로 이어집니다.</p>
+                </div>
+                <div class="card problem-item blue">
+                    <div class="problem-icon" style="background:rgba(0,0,0,0.2)">💡</div>
+                    <h3>우리의 기회 (The Gap)</h3>
+                    <p style="color:white">단순한 정보 나열이 아니라,<br>맥락을 짚어주는 '가이드'가 필요합니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 3: SOLUTION OVERVIEW -->
+        <section class="slide">
+            <div class="slide-header">02. Our Solution</div>
+            <h2 class="fade-up">Narrative-AI: <span class="highlight">운이 아닌 논리로.</span></h2>
+            <p class="fade-up delay-1">인과관계가 명확한 투자 시나리오를 큐레이션합니다.</p>
+
+            <div class="solution-flow fade-up delay-2">
+                <div class="flow-step">
+                    <div class="step-number">1</div>
+                    <div class="card">
+                        <h3>시나리오 마켓</h3>
+                        <p>AI가 매일 시장 흐름을 분석하여<br>3-5개의 핵심 테마를 제안합니다.</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">2</div>
+                    <div class="card blue">
+                        <h3>시나리오 빌더</h3>
+                        <p style="color:white">사용자가 직접 논리를 설계합니다.<br>(What, Why, Who, Exit)</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">3</div>
+                    <div class="card">
+                        <h3>스마트 모니터링</h3>
+                        <p>가격이 아닌, 내가 세운 '전제'가<br>유효한지 실시간으로 추적합니다.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 4: PRODUCT DEEP DIVE (BUILDER) -->
+        <section class="slide">
+            <div class="slide-header">03. Core Feature</div>
+            <h2 class="fade-up">시나리오 빌더 (Scenario Builder)</h2>
+            <p style="margin-bottom: 2rem;" class="fade-up delay-1">나만의 투자 논리를 완성하는 5단계</p>
+
+            <div class="builder-steps fade-up delay-2">
+                <div class="b-step">
+                    <div class="b-step-num">01</div>
+                    <div>
+                        <h3>거시 테마 선택 (What)</h3>
+                        <p>"금리 인하 수혜주", "AI 반도체 성장" 등</p>
+                    </div>
+                </div>
+                <div class="b-step">
+                    <div class="b-step-num">02</div>
+                    <div>
+                        <h3>논리 구체화 (Why)</h3>
+                        <p>"왜 지금 이 테마가 중요한가?" (인과관계 설정)</p>
+                    </div>
+                </div>
+                <div class="b-step">
+                    <div class="b-step-num">03</div>
+                    <div>
+                        <h3>수혜주 선정 (Who)</h3>
+                        <p>AI가 사용자의 논리에 가장 부합하는 기업을 연결합니다.</p>
+                    </div>
+                </div>
+                <div class="b-step" style="border: 1px solid var(--primary-blue);">
+                    <div class="b-step-num">04</div>
+                    <div>
+                        <h3 class="highlight">Exit 플랜 (핵심)</h3>
+                        <p>"가격이 떨어져서가 아니라, 이 전제가 깨지면 알려줘."</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 5: MARKET -->
+        <section class="slide">
+            <div class="slide-header">04. Market Opportunity</div>
+            <h2 class="fade-up">"Smart Lazy Investor"를 위한 서비스</h2>
+            
+            <div class="comparison-container fade-up delay-1">
+                <div class="card comparison-col">
+                    <h3>TAM (전체 시장)</h3>
+                    <h1 class="highlight">1,410만</h1>
+                    <p>국내 개인 투자자 수<br>(2024년 말 기준)</p>
+                </div>
+                <div class="card comparison-col">
+                    <h3>SAM (목표 시장)</h3>
+                    <h1 class="highlight">400만+</h1>
+                    <p>2030 디지털 네이티브 투자자<br>(정보 큐레이션 니즈 高)</p>
+                </div>
+                <div class="card comparison-col blue">
+                    <h3>Persona</h3>
+                    <h3 style="margin-top:1rem">김재테크 (28, 직장인)</h3>
+                    <p style="color:rgba(255,255,255,0.8)">"목돈은 3천만원 있는데, 뉴스 찾아볼 시간은 없고 남들 말 듣고 사기는 싫어요."</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 6: GTM STRATEGY (NEW) -->
+        <section class="slide">
+            <div class="slide-header">05. Go-To-Market</div>
+            <h2 class="fade-up">확장 전략 (Growth Strategy)</h2>
+            <p class="fade-up delay-1">MVP 검증부터 대중화까지.</p>
+
+            <div class="grid-3 fade-up delay-2">
+                <div class="card">
+                    <div class="pill">Phase 1</div>
+                    <h3>Launch (출시)</h3>
+                    <p style="margin-top:1rem">데모데이 & 초기 유입</p>
+                    <p class="text-grey" style="font-size:0.9rem; margin-top:0.5rem">멋쟁이사자처럼 데모데이 발표 및 피드백 수집</p>
+                </div>
+                <div class="card">
+                    <div class="pill">Phase 2</div>
+                    <h3>Validation (검증)</h3>
+                    <p style="margin-top:1rem">베타 커뮤니티</p>
+                    <p class="text-grey" style="font-size:0.9rem; margin-top:0.5rem">"스스로 납득하고 싶은" 2030 초기 팬덤 확보</p>
+                </div>
+                <div class="card">
+                    <div class="pill">Phase 3</div>
+                    <h3>Scale (확장)</h3>
+                    <p style="margin-top:1rem">B2B 파트너십</p>
+                    <p class="text-grey" style="font-size:0.9rem; margin-top:0.5rem">증권사 API 연동 및 리텐션 솔루션 공급</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 7: COMPETITIVE ADVANTAGE -->
+        <section class="slide">
+            <div class="slide-header">06. Why Us?</div>
+            <h2 class="fade-up">단순 '종목 추천'을 넘어섭니다.</h2>
+
+            <div class="problem-grid fade-up delay-1">
+                <div class="card">
+                    <div class="pill">기존 서비스 (MTS/리딩방)</div>
+                    <h3>"삼성전자 사세요."</h3>
+                    <p>초점: 종목 코드 & 현재 가격</p>
+                    <p style="margin-top:1rem; color:#f55;">리스크: 맥락 없는 매수는 불안감을 낳습니다.</p>
+                </div>
+                <div class="card blue">
+                    <div class="pill" style="background:white; color:var(--primary-blue)">Narrative-AI</div>
+                    <h3>"AI 성장을 믿는다면, 여기를 보세요."</h3>
+                    <p style="color:white">초점: 논리 & 인과관계</p>
+                    <p style="margin-top:1rem; color:white;">강점: 내가 선택한 논리이기에 흔들리지 않습니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 8: BUSINESS MODEL -->
+        <section class="slide">
+            <div class="slide-header">07. Business Model</div>
+            <h2 class="fade-up">지속 가능한 비즈니스 모델</h2>
+            
+            <div class="solution-flow fade-up delay-1">
+                <div class="card" style="flex:1">
+                    <h3>B2B (증권사)</h3>
+                    <p>솔루션 공급 (API 라이센싱)</p>
+                    <ul style="margin-top:1rem; padding-left:1.2rem; color:var(--text-grey); line-height:1.8;">
+                        <li>MTS 내 '시나리오 탭' 탑재</li>
+                        <li>사용자 체류시간 증대 도구</li>
+                    </ul>
+                </div>
+                <div class="card" style="flex:1">
+                    <h3>B2C (개인)</h3>
+                    <p>프리미엄 구독</p>
+                    <ul style="margin-top:1rem; padding-left:1.2rem; color:var(--text-grey); line-height:1.8;">
+                        <li>무제한 시나리오 생성</li>
+                        <li>실시간 논리 모니터링 알림</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 9: RISK & LEGAL (NEW) -->
+        <section class="slide">
+            <div class="slide-header">08. Compliance & Trust</div>
+            <h2 class="fade-up">안전하고 투명한 핀테크</h2>
+            <p class="fade-up delay-1">"전제 기반" 큐레이션으로 법적 리스크 최소화.</p>
+
+            <div class="grid-3 fade-up delay-2">
+                <div class="card" style="border-top: 4px solid #4CAF50;">
+                    <h3>투자 권유 아님</h3>
+                    <p style="margin-top:1rem">No Direct Signal</p>
+                    <p class="text-grey" style="font-size:0.9rem; margin-top:0.5rem">"사라/팔아라" 지시가 아닌, 판단을 돕는 논리적 근거만 제공합니다.</p>
+                </div>
+                <div class="card" style="border-top: 4px solid #4CAF50;">
+                    <h3>논리 기반 알림</h3>
+                    <p style="margin-top:1rem">Event-based Alert</p>
+                    <p class="text-grey" style="font-size:0.9rem; margin-top:0.5rem">"가격 하락"이 아닌 "금리 동결" 등 전제 조건의 변화를 알립니다.</p>
+                </div>
+                <div class="card" style="border-top: 4px solid #4CAF50;">
+                    <h3>투명성 확보</h3>
+                    <p style="margin-top:1rem">AI Hallucination Check</p>
+                    <p class="text-grey" style="font-size:0.9rem; margin-top:0.5rem">AI의 한계를 명시하고, 모든 정보의 출처를 투명하게 제공합니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 10: ROADMAP -->
+        <section class="slide">
+            <div class="slide-header">09. Roadmap</div>
+            <h2 class="fade-up">2026년 로드맵</h2>
+
+            <div class="roadmap fade-up delay-1">
+                <div class="roadmap-point">
+                    <div class="dot"></div>
+                    <h3>2026 Q1</h3>
+                    <p class="highlight">MVP 개발</p>
+                    <p>시나리오 마켓 UI<br>빌더 프로토타입 구현</p>
+                </div>
+                <div class="roadmap-point">
+                    <div class="dot"></div>
+                    <h3>2026 Q2</h3>
+                    <p class="highlight">베타 테스트</p>
+                    <p>뉴스/공시 데이터 API 연동<br>사용자 피드백 수집</p>
+                </div>
+                <div class="roadmap-point">
+                    <div class="dot"></div>
+                    <h3>2026 Q3</h3>
+                    <p class="highlight">정식 출시</p>
+                    <p>라이프사이클 알림 시스템<br>히스토리 추적 기능</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 11: END -->
+        <section class="slide flex-center" style="text-align:center;">
+            <h1 class="fade-up">Design Your Flow.</h1>
+            <p class="fade-up delay-1">Narrative-AI</p>
+            <div class="card blue fade-up delay-2" style="margin-top:2rem; padding: 1rem 3rem;">
+                <h3>문의하기</h3>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        const deck = document.getElementById('deck');
+        const progressBar = document.getElementById('progressBar');
+        const slides = document.querySelectorAll('.slide');
+
+        // Update progress bar
+        deck.addEventListener('scroll', () => {
+            const scrollTop = deck.scrollTop;
+            const scrollHeight = deck.scrollHeight - deck.clientHeight;
+            const scrollPercent = (scrollTop / scrollHeight) * 100;
+            progressBar.style.width = scrollPercent + '%';
+        });
+
+        // Intersection Observer for Animations
+        const observerOptions = {
+            root: deck,
+            rootMargin: '0px',
+            threshold: 0.3
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const elements = entry.target.querySelectorAll('.fade-up');
+                    elements.forEach(el => {
+                        el.style.animationPlayState = 'running';
+                    });
+                }
+            });
+        }, observerOptions);
+
+        slides.forEach(slide => {
+            observer.observe(slide);
+            const elements = slide.querySelectorAll('.fade-up');
+            elements.forEach(el => {
+                el.style.animation = 'none';
+                el.offsetHeight; /* trigger reflow */
+                el.style.animation = null; 
+                el.style.animationPlayState = 'paused';
+            });
+        });
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            const currentScroll = deck.scrollTop;
+            const slideHeight = window.innerHeight;
+            
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                deck.scrollBy({ top: slideHeight, behavior: 'smooth' });
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                e.preventDefault();
+                deck.scrollBy({ top: -slideHeight, behavior: 'smooth' });
+            }
+        });
+    </script>
+</body>
+</html>
