@@ -6,7 +6,8 @@ import {
     ChevronRight,
     ChevronLeft,
     TrendingUp,
-    Sparkles
+    Sparkles,
+    Search
 } from 'lucide-react'
 import type { ViewState } from './data'
 import { SCENARIO_DATA } from './data/scenarioData'
@@ -41,17 +42,37 @@ type FlatStock = {
     chartData?: { o: number, c: number, h: number, l: number }[]
 }
 
+// Helper for Value Chain Info
+const RELATED_INFO: Record<string, string> = {
+    'NVIDIA': 'AI 가속기(GPU) 시장 점유율 1위, HBM 핵심 수요처',
+    'SK Hynix': 'HBM 시장 글로벌 리더, NVIDIA 핵심 공급사',
+    'TSMC': '세계 최대 파운드리, AI 칩 패키징(CoWoS) 주도',
+    'Hanmi': 'TC 본더 장비 글로벌 1위, HBM 공정 필수 장비',
+    'Samsung': '종합 반도체 솔루션, 차세대 HBM 및 파운드리 확장',
+    'Google': '자체 AI 칩(TPU) 개발 및 데이터센터 확장',
+    'Apple': '온디바이스 AI 강화, 자체 칩 설계 역량 확대',
+    'Tesla': '자율주행용 AI 슈퍼컴퓨터(Dojo) 구축 가속',
+    'Microsoft': '클라우드 및 생성형 AI 서비스(Azure OpenAI) 리더'
+};
+
 export default function Dashboard({ setView }: DashboardProps) {
     const [tickerOffset, setTickerOffset] = useState(0)
+    const [searchTerm, setSearchTerm] = useState('')
     const [stocks, setStocks] = useState<FlatStock[]>([])
     const [listMode, setListMode] = useState<'KOSPI' | 'MY_STOCK'>('KOSPI')
     const [expandedStockId, setExpandedStockId] = useState<string | null>(null)
+    const [valueChainToast, setValueChainToast] = useState<{ show: boolean, name: string, info: string } | null>(null)
     const scrollRef = useRef<HTMLDivElement>(null)
 
     // Filter Logic
-    const filteredStocks = listMode === 'KOSPI'
+    const baseStocks = listMode === 'KOSPI'
         ? stocks
         : stocks.filter((_, i) => i % 2 === 0)
+
+    const filteredStocks = baseStocks.filter(s =>
+        s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.id.toLowerCase().includes(searchTerm.toLowerCase())
+    )
 
     // Limit stocks for demo
     const displayStocks = filteredStocks.slice(0, 5)
@@ -106,6 +127,8 @@ export default function Dashboard({ setView }: DashboardProps) {
             { title: `[특징주] ${name}, 외국인 5일 연속 순매수`, content: "실적 개선 기대감에 주요 매매 창구 상위 랭크..." },
             { title: `${name}, '어닝 서프라이즈' 기대감 고조`, content: "증권가, 목표 주가 줄줄이 상향 조정..." }
         ];
+
+
 
         // Helper to generate random candle data
         const getChartData = () => {
@@ -182,7 +205,7 @@ export default function Dashboard({ setView }: DashboardProps) {
             </div>
 
             <header className="dash-header" style={{
-                padding: '20px 24px',
+                padding: '8px 24px',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
@@ -217,6 +240,29 @@ export default function Dashboard({ setView }: DashboardProps) {
 
                 {/* STOCK LIST SECTION */}
                 <div style={{ padding: '0 24px 20px', background: 'transparent' }}>
+
+                    {/* Search Input */}
+                    <div style={{ position: 'relative', marginBottom: '24px' }}>
+                        <Search size={18} color="var(--dash-muted)" style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)' }} />
+                        <input
+                            type="text"
+                            placeholder="종목명 검색..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            style={{
+                                width: '100%',
+                                padding: '12px 16px 12px 48px',
+                                borderRadius: '12px',
+                                border: '1px solid var(--dash-border)',
+                                background: 'var(--dash-surface)',
+                                color: 'var(--dash-text)',
+                                fontSize: '14px',
+                                outline: 'none',
+                                boxSizing: 'border-box'
+                            }}
+                        />
+                    </div>
+
                     <div style={{
                         display: 'flex', alignItems: 'center', gap: '24px',
                         fontSize: '14px', fontWeight: 700, color: 'var(--dash-muted)',
@@ -363,7 +409,10 @@ export default function Dashboard({ setView }: DashboardProps) {
                                                         boxSizing: 'border-box'
                                                     }}>
                                                         <div style={{ background: 'var(--dash-surface)', borderRadius: '8px', padding: '24px', height: '220px', boxShadow: '0 4px 20px var(--dash-shadow)' }}>
-                                                            <div style={{ fontSize: '11px', color: 'var(--dash-primary)', marginBottom: '16px', letterSpacing: '0.1em', fontWeight: 700, textTransform: 'uppercase' }}>Price Action</div>
+                                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                                                                <div style={{ fontSize: '11px', color: 'var(--dash-primary)', letterSpacing: '0.1em', fontWeight: 700, textTransform: 'uppercase' }}>Price Action</div>
+                                                                <div style={{ fontSize: '10px', color: 'var(--dash-muted)', background: 'var(--dash-surface-highlight)', padding: '2px 8px', borderRadius: '12px' }}>Last 14 Days</div>
+                                                            </div>
                                                             <div style={{ height: '140px', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', padding: '0 4px' }}>
                                                                 {stock.chartData?.map((data, i) => {
                                                                     const min = Math.min(...stock.chartData!.map(d => d.l));
@@ -398,7 +447,10 @@ export default function Dashboard({ setView }: DashboardProps) {
                                                         boxSizing: 'border-box'
                                                     }}>
                                                         <div style={{ background: 'var(--dash-surface)', borderRadius: '8px', padding: '24px', height: '220px', position: 'relative', boxShadow: '0 4px 20px var(--dash-shadow)' }}>
-                                                            <div style={{ fontSize: '11px', color: 'var(--dash-primary)', marginBottom: '10px', letterSpacing: '0.1em', fontWeight: 700, textTransform: 'uppercase' }}>Value Chain</div>
+                                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                                                                <div style={{ fontSize: '11px', color: 'var(--dash-primary)', letterSpacing: '0.1em', fontWeight: 700, textTransform: 'uppercase' }}>Value Chain</div>
+                                                                <div style={{ fontSize: '10px', color: 'var(--dash-muted)', padding: '2px 6px', border: '1px solid var(--dash-border)', borderRadius: '4px' }}>Long Press for Info</div>
+                                                            </div>
                                                             <div style={{ position: 'relative', height: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                                 <div style={{
                                                                     width: '64px', height: '64px', borderRadius: '50%',
@@ -414,7 +466,18 @@ export default function Dashboard({ setView }: DashboardProps) {
                                                                     { name: 'TSMC', x: 85, y: 80 },
                                                                     { name: 'Hanmi', x: 15, y: 85 }
                                                                 ].map((node, i) => (
-                                                                    <div key={i}>
+                                                                    <div
+                                                                        key={i}
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation()
+                                                                            setValueChainToast({
+                                                                                show: true,
+                                                                                name: node.name,
+                                                                                info: RELATED_INFO[node.name] || '관련 상세 정보가 없습니다.'
+                                                                            })
+                                                                        }}
+                                                                        style={{ cursor: 'pointer' }}
+                                                                    >
                                                                         <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
                                                                             <line x1="50%" y1="50%" x2={`${node.x}%`} y2={`${node.y}%`} stroke="#888" strokeWidth="1" strokeDasharray="4 2" />
                                                                             <circle cx={`${node.x}%`} cy={`${node.y}%`} r="2" fill="#888" />
@@ -422,10 +485,14 @@ export default function Dashboard({ setView }: DashboardProps) {
                                                                         <div style={{
                                                                             position: 'absolute', left: `${node.x}%`, top: `${node.y}%`, transform: 'translate(-50%, -50%)',
                                                                             padding: '6px 10px', borderRadius: '20px',
-                                                                            background: 'var(--dash-surface-highlight)', border: '1px solid var(--dash-border)',
+                                                                            background: valueChainToast?.name === node.name ? 'var(--dash-primary)' : 'var(--dash-surface-highlight)',
+                                                                            border: valueChainToast?.name === node.name ? '1px solid var(--dash-primary)' : '1px solid var(--dash-border)',
                                                                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                                            fontSize: '10px', color: 'var(--dash-text)', fontWeight: 600, zIndex: 11,
-                                                                            whiteSpace: 'nowrap'
+                                                                            fontSize: '10px', color: valueChainToast?.name === node.name ? '#ffffff' : 'var(--dash-text)',
+                                                                            fontWeight: 600, zIndex: 11,
+                                                                            whiteSpace: 'nowrap',
+                                                                            transition: 'all 0.2s',
+                                                                            boxShadow: valueChainToast?.name === node.name ? '0 0 10px rgba(59, 130, 246, 0.5)' : 'none'
                                                                         }}>
                                                                             {node.name}
                                                                         </div>
@@ -583,6 +650,109 @@ export default function Dashboard({ setView }: DashboardProps) {
                 </div>
 
             </main>
+
+            {/* Bottom Sheet Drawer for Value Chain */}
+            <AnimatePresence>
+                {valueChainToast && (
+                    <>
+                        {/* Backdrop Overlay */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setValueChainToast(null)}
+                            style={{
+                                position: 'fixed',
+                                top: 0, left: 0, right: 0, bottom: 0,
+                                background: 'rgba(0,0,0,0.6)',
+                                backdropFilter: 'blur(4px)',
+                                zIndex: 9990
+                            }}
+                        />
+
+                        {/* Drawer Sheet */}
+                        <motion.div
+                            initial={{ y: '100%' }}
+                            animate={{ y: 0 }}
+                            exit={{ y: '100%' }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                            drag="y"
+                            dragConstraints={{ top: 0 }}
+                            dragElastic={0.2}
+                            onDragEnd={(_, info) => {
+                                if (info.offset.y > 100) setValueChainToast(null)
+                            }}
+                            style={{
+                                position: 'fixed',
+                                bottom: 0, left: 0, right: 0,
+                                background: '#ffffff', // White Light Mode
+                                borderTopLeftRadius: '28px',
+                                borderTopRightRadius: '28px',
+                                padding: '0 0 140px 0',
+                                zIndex: 9999,
+                                boxShadow: '0 -10px 40px rgba(0,0,0,0.15)', // Lighter shadow
+                                maxWidth: '600px',
+                                margin: '0 auto'
+                            }}
+                        >
+                            {/* Drag Handle Area */}
+                            <div style={{ padding: '12px 0 20px', display: 'flex', justifyContent: 'center' }}>
+                                <div style={{ width: '36px', height: '5px', background: '#e5e5e5', borderRadius: '100px' }} />
+                            </div>
+
+                            {/* Content Container */}
+                            <div style={{ padding: '0 28px' }}>
+                                {/* Header */}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
+                                    <div style={{
+                                        width: '56px', height: '56px', borderRadius: '18px',
+                                        background: 'linear-gradient(135deg, var(--dash-primary), #2563eb)',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        color: 'white', fontWeight: 700, fontSize: '20px',
+                                        boxShadow: '0 8px 20px rgba(37, 99, 235, 0.3)'
+                                    }}>
+                                        {valueChainToast.name[0]}
+                                    </div>
+                                    <div>
+                                        <div style={{ fontSize: '26px', fontWeight: 800, color: '#111111', letterSpacing: '-0.5px', marginBottom: '4px' }}>
+                                            {valueChainToast.name}
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '6px' }}>
+                                            <span style={{ fontSize: '12px', fontWeight: 600, color: '#555', background: '#f5f5f7', padding: '4px 8px', borderRadius: '6px' }}>
+                                                핵심 밸류체인
+                                            </span>
+                                            <span style={{ fontSize: '12px', fontWeight: 600, color: '#2563eb', background: 'rgba(37, 99, 235, 0.1)', padding: '4px 8px', borderRadius: '6px' }}>
+                                                파트너
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Info Card */}
+                                <div style={{
+                                    background: '#f9f9f9',
+                                    borderRadius: '20px',
+                                    padding: '24px',
+                                    marginBottom: '20px',
+                                    border: '1px solid #eee'
+                                }}>
+                                    <h4 style={{ margin: '0 0 12px 0', fontSize: '14px', color: '#888', fontWeight: 600 }}>기업 개요</h4>
+                                    <p style={{
+                                        margin: 0,
+                                        fontSize: '17px',
+                                        lineHeight: 1.6,
+                                        color: '#333',
+                                        fontWeight: 400,
+                                        wordBreak: 'keep-all'
+                                    }}>
+                                        {valueChainToast.info}
+                                    </p>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
 
             <FloatingNav setView={setView} current="DASHBOARD" />
         </div>

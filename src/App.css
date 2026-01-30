@@ -14,6 +14,19 @@
   --radius-md: 0px;
   --card-width: 320px;
   --gap: 20px;
+
+  /* Missing Variables defined in components */
+  --dash-bg: #000000;
+  --dash-surface: #121212;
+  --dash-header-bg: #000000;
+  --dash-border: #333333;
+  --dash-text: #ffffff;
+  --dash-muted: #888888;
+  --dash-primary: #3b82f6;
+  --dash-shadow: rgba(0, 0, 0, 0.5);
+  --dash-danger: #ef4444;
+  --dash-blue: #3b82f6;
+  --dash-surface-highlight: #1e1e1e;
 }
 
 body {

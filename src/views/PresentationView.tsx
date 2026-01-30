@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Play, ChevronLeft } from 'lucide-react'
+import { Play, ChevronLeft, SkipForward } from 'lucide-react'
 import type { ViewState } from '../data'
 import { SCENARIO_DATA, DEPTH_STEPS } from '../data/scenarioData'
 import type { ScenarioOption } from '../data/scenarioData'
@@ -15,6 +15,15 @@ export default function PresentationView({ setView }: PresentationViewProps) {
     const [path, setPath] = useState<ScenarioOption[]>([])
     const [visibleDepth, setVisibleDepth] = useState(0) // Control progressive display
     const containerRef = useRef<HTMLDivElement>(null)
+
+    // Check for skip flag immediate on mount
+    const [skipAnimation, setSkipAnimation] = useState(() => localStorage.getItem('presentation_skip_animation') === 'true')
+
+    useEffect(() => {
+        if (skipAnimation) {
+            localStorage.removeItem('presentation_skip_animation')
+        }
+    }, [skipAnimation])
 
     useEffect(() => {
         try {
@@ -46,6 +55,11 @@ export default function PresentationView({ setView }: PresentationViewProps) {
     useEffect(() => {
         if (path.length === 0) return
 
+        if (skipAnimation) {
+            setVisibleDepth(path.length)
+            return
+        }
+
         setVisibleDepth(0)
         const interval = setInterval(() => {
             setVisibleDepth(prev => {
@@ -58,7 +72,7 @@ export default function PresentationView({ setView }: PresentationViewProps) {
         }, 1350) // Sync with 1.35s phase duration
 
         return () => clearInterval(interval)
-    }, [path])
+    }, [path, skipAnimation])
 
     const findPathToNode = (nodes: ScenarioOption[], targetId: string, currentPath: string[] = []): string[] | null => {
         for (const node of nodes) {
@@ -86,7 +100,7 @@ export default function PresentationView({ setView }: PresentationViewProps) {
 
     // Progressive auto-scroll synchronized with animation
     useEffect(() => {
-        if (path.length > 0) {
+        if (path.length > 0 && !skipAnimation) {
             path.forEach((_, index) => {
                 // Animation delay: index * 1.35s (1350ms) - sped up 1.12x
                 const delay = index * 1350 + 720
@@ -112,8 +126,36 @@ export default function PresentationView({ setView }: PresentationViewProps) {
                     }
                 }, delay)
             })
+        } else if (path.length > 0 && skipAnimation) {
+            // If skipped, maybe scroll to beginning or keep as is? 
+            // Default behavior is usually 0, or we can scroll to the end if desired.
+            // Let's just create a slight timeout to ensure layout is ready then scroll to start/0
+            setTimeout(() => {
+                if (containerRef.current) {
+                    const initialStepRaw = localStorage.getItem('presentation_initial_step')
+                    let initialScrollLeft = 0
+
+                    if (initialStepRaw) {
+                        const stepIndex = parseInt(initialStepRaw, 10)
+                        if (!isNaN(stepIndex)) {
+                            const columnWidth = 260
+                            const gap = 40
+                            const padding = 20
+                            const stride = columnWidth + gap
+                            const currentColumnX = padding + (stepIndex * stride)
+                            const containerWidth = containerRef.current.clientWidth
+
+                            // Center the column
+                            initialScrollLeft = Math.max(0, currentColumnX - (containerWidth / 2) + (columnWidth / 2))
+                        }
+                        localStorage.removeItem('presentation_initial_step')
+                    }
+
+                    containerRef.current.scrollTo({ left: initialScrollLeft, behavior: 'auto' })
+                }
+            }, 100)
         }
-    }, [path])
+    }, [path, skipAnimation])
 
     return (
         <div style={{
@@ -157,6 +199,7 @@ export default function PresentationView({ setView }: PresentationViewProps) {
                         전체 시나리오 조감도
                     </h1>
                 </div>
+
             </header>
 
             <motion.main
@@ -197,14 +240,14 @@ export default function PresentationView({ setView }: PresentationViewProps) {
 
                                             return (
                                                 <motion.div
-                                                    key={opt.id}
+                                                    key={`${opt.id}-${skipAnimation}`} // Force remount on skip change
                                                     id={`node-${opt.id}`}
                                                     onClick={() => handleStartAnalysis(depth)}
-                                                    initial={{ opacity: 0, x: -20, scale: 0.9 }}
+                                                    initial={skipAnimation ? { opacity: 1, x: 0, scale: isSelected ? 1 : 1 } : { opacity: 0, x: -20, scale: 0.9 }}
                                                     animate={{ opacity: 1, x: 0, scale: isSelected ? 1 : 1 }}
                                                     transition={{
-                                                        delay: depth * 1.35 + idx * 0.1,
-                                                        duration: 0.5,
+                                                        delay: skipAnimation ? 0 : depth * 1.35 + idx * 0.1,
+                                                        duration: skipAnimation ? 0 : 0.5,
                                                         type: "spring",
                                                         stiffness: 100
                                                     }}
@@ -248,12 +291,15 @@ export default function PresentationView({ setView }: PresentationViewProps) {
                     {/* Progressive Line Rendering - Blue Lines */}
                     {path.map((node, i) => {
                         if (i === path.length - 1) return null
-                        if (i >= visibleDepth) return null
+
+                        // Use derived depth for instant update
+                        const currentDepth = skipAnimation ? path.length : visibleDepth
+                        if (i >= currentDepth) return null
 
                         const nextNode = path[i + 1]
                         return (
                             <Xarrow
-                                key={`${node.id}-${nextNode.id}`}
+                                key={`${node.id}-${nextNode.id}-${skipAnimation}`} // Force remount logic for Xarrow
                                 start={`node-${node.id}`}
                                 end={`node-${nextNode.id}`}
                                 color="var(--dash-primary)"
@@ -263,7 +309,7 @@ export default function PresentationView({ setView }: PresentationViewProps) {
                                 startAnchor="right"
                                 endAnchor="left"
                                 curveness={0.6}
-                                animateDrawing={0.5}
+                                animateDrawing={skipAnimation ? 0 : 0.5}
                                 zIndex={5}
                             />
                         )
@@ -297,37 +343,56 @@ export default function PresentationView({ setView }: PresentationViewProps) {
 
                     <button
                         onClick={() => {
-                            if (containerRef.current) {
-                                const container = containerRef.current
-                                const scrollLeft = container.scrollLeft
-                                const containerWidth = container.clientWidth
-                                const viewportCenter = scrollLeft + (containerWidth / 2)
-                                const approximateIndex = Math.round((viewportCenter - 150) / 300)
-                                const targetIndex = Math.max(0, Math.min(path.length - 1, approximateIndex))
-                                handleStartAnalysis(targetIndex)
+                            const isAnimating = (!skipAnimation && visibleDepth < path.length - 1)
+
+                            if (isAnimating) {
+                                setSkipAnimation(true)
+                                // Force instant render update logic via state
+                                setVisibleDepth(path.length)
                             } else {
-                                handleStartAnalysis(0)
+                                if (containerRef.current) {
+                                    const container = containerRef.current
+                                    const scrollLeft = container.scrollLeft
+                                    const containerWidth = container.clientWidth
+                                    const viewportCenter = scrollLeft + (containerWidth / 2)
+                                    const approximateIndex = Math.round((viewportCenter - 150) / 300)
+                                    const targetIndex = Math.max(0, Math.min(path.length - 1, approximateIndex))
+                                    handleStartAnalysis(targetIndex)
+                                } else {
+                                    handleStartAnalysis(0)
+                                }
                             }
                         }}
                         style={{
-                            width: '56px',
+                            width: (!skipAnimation && visibleDepth < path.length - 1) ? '56px' : 'auto', // Pill width if analyzing
+                            padding: (!skipAnimation && visibleDepth < path.length - 1) ? '0' : '0 24px',
                             height: '56px',
                             background: 'var(--dash-primary)',
                             border: 'none',
-                            borderRadius: '50%',
-                            color: 'white', /* Changed to white for better contrast primarily */
+                            borderRadius: (!skipAnimation && visibleDepth < path.length - 1) ? '50%' : '30px', // Pill radius
+                            color: 'white',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             cursor: 'pointer',
                             flexShrink: 0,
                             boxShadow: '0 4px 10px rgba(41, 121, 255, 0.4)',
-                            transition: 'transform 0.2s'
+                            transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                            fontWeight: 700,
+                            fontSize: '16px'
                         }}
                         onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
                         onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                     >
-                        <Play size={24} fill="currentColor" style={{ marginLeft: '4px' }} />
+                        {(!skipAnimation && visibleDepth < path.length - 1) ? (
+                            <SkipForward size={24} fill="currentColor" />
+                        ) : (
+                            // Analyze Text Button
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <span>분석하기</span>
+                                <Play size={18} fill="currentColor" />
+                            </div>
+                        )}
                     </button>
                 </div>
             </motion.div>

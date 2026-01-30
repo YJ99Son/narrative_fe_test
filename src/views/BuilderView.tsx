@@ -3,7 +3,7 @@ import type { ViewState } from '../data'
 import FloatingNav from '../components/FloatingNav'
 import { SCENARIO_DATA, DEPTH_STEPS } from '../data/scenarioData'
 import type { ScenarioOption } from '../data/scenarioData'
-import { Save, Send, ZoomIn, ZoomOut, RotateCcw, ChevronRight, ChevronLeft, Sparkles } from 'lucide-react'
+import { Save, Send, ZoomIn, ZoomOut, RotateCcw, ChevronRight, ChevronLeft, Sparkles, LayoutTemplate } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Xarrow, { Xwrapper, useXarrow } from 'react-xarrows'
 
@@ -370,15 +370,31 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
                         <div style={{ fontSize: '10px', color: 'var(--dash-muted)', fontWeight: 700, letterSpacing: '1px' }}>
                             NARRATIVE.FLOW
                         </div>
-                        <div
-                            onClick={() => setView('MYSCENARIOS')}
-                            style={{
-                                display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer',
-                                background: 'var(--dash-surface)', padding: '6px 12px', borderRadius: '20px', border: '1px solid var(--dash-border)'
-                            }}
-                        >
-                            <Save size={14} color="var(--dash-primary)" />
-                            <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--dash-text)' }}>저장</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <div
+                                onClick={() => setView('MYSCENARIOS')}
+                                style={{
+                                    display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer',
+                                    background: 'var(--dash-surface)', padding: '6px 12px', borderRadius: '20px', border: '1px solid var(--dash-border)'
+                                }}
+                            >
+                                <Save size={14} color="var(--dash-primary)" />
+                                <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--dash-text)' }}>저장</span>
+                            </div>
+                            <div
+                                onClick={() => {
+                                    localStorage.setItem('presentation_skip_animation', 'true')
+                                    localStorage.setItem('presentation_initial_step', currentStep.toString())
+                                    setView('PRESENTATION')
+                                }}
+                                style={{
+                                    display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer',
+                                    background: 'var(--dash-surface)', padding: '6px 12px', borderRadius: '20px', border: '1px solid var(--dash-border)'
+                                }}
+                            >
+                                <LayoutTemplate size={14} color="var(--dash-primary)" />
+                                <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--dash-text)' }}>구조도</span>
+                            </div>
                         </div>
                     </div>
 
@@ -677,6 +693,16 @@ const BuilderView = ({ setView, current }: BuilderViewProps) => {
                         fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', boxShadow: '0 4px 12px rgba(59,130,246,0.3)'
                     }}>
                         <Save size={16} /> 저장하기
+                    </button>
+                    <button className="action-btn" onClick={() => {
+                        localStorage.setItem('presentation_skip_animation', 'true')
+                        localStorage.setItem('presentation_initial_step', currentStep.toString())
+                        setView('PRESENTATION')
+                    }} style={{
+                        background: 'var(--dash-surface)', color: 'var(--dash-text)', border: '1px solid var(--dash-border)', padding: '8px 24px', borderRadius: '9999px',
+                        fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', boxShadow: '0 4px 6px var(--dash-shadow)'
+                    }}>
+                        <LayoutTemplate size={16} /> 구조도
                     </button>
                 </div>
             </header>
