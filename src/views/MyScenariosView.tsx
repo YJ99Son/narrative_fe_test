@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import type { ViewState } from '../data'
 import FloatingNav from '../components/FloatingNav'
 import MobileMyPage from './MobileMyPage'
+import BrandLogo from '../components/BrandLogo'
 import { PieChart, TrendingUp, BookOpen, Activity } from 'lucide-react'
 
 type MyScenariosViewProps = {
@@ -120,9 +121,7 @@ const MyScenariosView = ({ setView, current }: MyScenariosViewProps) => {
                     }}>
                         퀴즈 풀기
                     </button>
-                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--dash-surface-highlight)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--dash-border)' }}>
-                        <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--dash-muted)' }}>JS</span>
-                    </div>
+                    <BrandLogo size="md" withText={false} />
                 </div>
             </header>
 
