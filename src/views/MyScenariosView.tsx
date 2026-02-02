@@ -106,9 +106,8 @@ const MyScenariosView = ({ setView, current }: MyScenariosViewProps) => {
         <div className="dashboard-page my-scenarios-page" style={{ background: 'var(--dash-bg)', minHeight: '100vh', color: 'var(--dash-text)', display: 'flex', flexDirection: 'column', fontFamily: "'Inter', sans-serif" }}>
             {/* Header / Nav Area */}
             <header className="dashboard-header" style={{ padding: '24px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--dash-header-bg)', backdropFilter: 'blur(10px)' }}>
-                <div style={{ fontWeight: 800, fontSize: '24px', letterSpacing: '-0.02em', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Activity size={24} color="var(--dash-primary)" />
-                    NARRATIVE<span style={{ color: 'var(--dash-primary)' }}>.</span>FLOW
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <BrandLogo size="md" withText={true} />
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
                     <div style={{ color: 'var(--dash-muted)', fontSize: '14px', fontWeight: 700, cursor: 'pointer', transition: 'color 0.2s' }} onClick={() => setView('DASHBOARD')}>DASHBOARD</div>
@@ -121,7 +120,9 @@ const MyScenariosView = ({ setView, current }: MyScenariosViewProps) => {
                     }}>
                         퀴즈 풀기
                     </button>
-                    <BrandLogo size="md" withText={false} />
+                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--dash-surface-highlight)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--dash-border)' }}>
+                        <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--dash-muted)' }}>JS</span>
+                    </div>
                 </div>
             </header>
 
