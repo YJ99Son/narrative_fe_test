@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { ChevronRight } from 'lucide-react'
 import '../Dashboard.css'
+import BrandLogo from '../components/BrandLogo'
 import type { SavedScenario } from './MyScenariosView'
 import type { ViewState } from '../data'
 
@@ -41,12 +42,7 @@ const MobileMyPage = ({ scenarios, // Placeholder for MobileMyPage content check
                 backdropFilter: 'blur(10px)'
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-                    <div style={{
-                        width: '32px', height: '32px', borderRadius: '50%', background: 'var(--dash-surface-highlight)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        color: 'var(--dash-muted)', fontSize: '14px', fontWeight: 700
-                    }}>JS</div>
-                    <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--dash-text)' }}>My Library</span>
+                    <BrandLogo size="md" withText={true} />
                 </div>
 
                 <h1 style={{ fontSize: '32px', fontWeight: 800, color: 'var(--dash-text)', margin: 0, letterSpacing: '-0.02em' }}>
