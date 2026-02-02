@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
+  <rect width="48" height="48" rx="12" fill="#000000"/>
+  <circle cx="24" cy="24" r="16" fill="#3b82f6" fill-opacity="0.2"/>
+  <text x="24" y="32" font-family="'Pretendard', sans-serif" font-size="20" font-weight="800" text-anchor="middle" fill="#ffffff">
+    NF
+  </text>
+</svg>
